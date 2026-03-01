@@ -27,7 +27,7 @@ body{
     perspective:2000px;
 }
 
-/* LETTER (darf frei rausfahren) */
+/* LETTER */
 .letter{
     position:absolute;
     width:110%;
@@ -71,19 +71,15 @@ body{
     z-index:2;
 }
 
-/* FRONT (schräg) */
+/* FRONT (nur unterer Teil – keine Dreiecksspitze!) */
 .envelope-front{
     position:absolute;
+    bottom:0;
     width:100%;
-    height:100%;
+    height:65%;
     background:url('assets/envelope-texture.jpg') center/cover no-repeat;
-    clip-path: polygon(
-        0 100%, 
-        0 0, 
-        50% 55%, 
-        100% 0, 
-        100% 100%
-    );
+    border-bottom-left-radius:6px;
+    border-bottom-right-radius:6px;
     z-index:3;
 }
 
@@ -98,7 +94,7 @@ body{
     z-index:4;
 }
 
-/* Vorderseite der Klappe */
+/* Vorderseite */
 .flap-front{
     position:absolute;
     width:100%;
@@ -108,7 +104,7 @@ body{
     backface-visibility:hidden;
 }
 
-/* Rückseite der Klappe */
+/* Rückseite */
 .flap-back{
     position:absolute;
     width:100%;
@@ -136,7 +132,7 @@ body{
 }
 
 .open .letter{
-    transform:translateY(-180px);
+    transform:translateY(-130px);
 }
 
 /* PASSWORD */
@@ -162,6 +158,10 @@ body{
     background:#8b0000;
     color:white;
     cursor:pointer;
+}
+
+.password-section button:hover{
+    background:#6e0000;
 }
 </style>
 </head>
