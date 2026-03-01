@@ -18,7 +18,7 @@ body {
 
 #map {
     width: 100vw; height: 100vh;
-    display:none; /* Karte versteckt bis Umschlag geöffnet */
+    display:none;
 }
 
 /* Timer */
@@ -28,15 +28,13 @@ body {
     font-size:18px; z-index:1000; display:none;
 }
 
-/* Umschlag Container */
+/* Umschlag */
 .envelope-wrapper {
     position: absolute;
     width: 400px; height: 250px;
     top:50%; left:50%; transform:translate(-50%,-50%);
     cursor:pointer; z-index:1000;
 }
-
-/* Umschlag */
 .envelope {
     width:100%; height:100%;
     background: url('https://i.ibb.co/1rz0y3L/paper-texture.jpg') center/cover no-repeat;
@@ -44,7 +42,6 @@ body {
     box-shadow: 0 10px 20px rgba(0,0,0,0.2);
     position:absolute; top:0; left:0;
 }
-
 .flap {
     position: absolute; width: 100%; height: 100%;
     background: #e2d7c2;
@@ -54,8 +51,6 @@ body {
     border-bottom: 1px solid #d6cbb7;
     z-index:2;
 }
-
-/* Wachssiegel */
 .seal {
     position:absolute; width:50px; height:50px;
     background: radial-gradient(circle at 30% 30%, #ff3333, #8b0000);
@@ -73,14 +68,23 @@ body {
     font-size:24px; line-height:1.3;
     transform: translateY(100%); transition: transform 1.5s ease;
     z-index:1;
-    cursor:pointer;
 }
+
+/* Passwort Feld */
+.password-section {
+    margin-top: 15px;
+}
+input {
+    padding:8px; border:1px solid #ccc; font-family:Georgia, serif;
+}
+button {
+    padding:8px 12px; margin-left:5px; background:#8b0000; color:white; border:none; cursor:pointer;
+}
+button:hover { background:#6e0000; }
 
 /* Animation geöffnet */
 .open .flap { transform: rotateX(180deg); }
 .open .letter { transform: translateY(-120px); }
-
-/* Karte fadein */
 .show-map { display:block; animation: fadeIn 1s forwards; }
 @keyframes fadeIn { from {opacity:0;} to {opacity:1;} }
 
@@ -93,9 +97,11 @@ body {
     <div class="flap"></div>
     <div class="seal"></div>
     <div class="letter" id="letter">
-        For you and me.<br>
-        For us.<br>
-        For every "I miss you" and "See you soon".
+        <p>For you and me.<br>For us.<br>For every "I miss you" and "See you soon".</p>
+        <div class="password-section">
+            <input type="password" id="password" placeholder="Enter date">
+            <button onclick="checkPassword(event)">Open</button>
+        </div>
     </div>
 </div>
 
@@ -106,23 +112,26 @@ body {
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <script>
-// --- Umschlag öffnen & Brief animieren ---
 const envelope = document.getElementById('envelope');
-const letter = document.getElementById('letter');
 const mapDiv = document.getElementById('map');
 const timerDiv = document.getElementById('timer');
 
-envelope.addEventListener('click', ()=>{
-    envelope.classList.add('open');
-    // Nach 2 Sekunden Karte einblenden
-    setTimeout(()=>{
-        envelope.style.display='none';
-        mapDiv.classList.add('show-map');
-        timerDiv.style.display='block';
-        initMap(); // Karte initialisieren
-        startTimer();
-    },2000);
-});
+function checkPassword(event){
+    event.stopPropagation();
+    const pw = document.getElementById('password').value;
+    if(pw === "14.04.2025"){
+        envelope.classList.add('open');
+        setTimeout(()=>{
+            envelope.style.display='none';
+            mapDiv.classList.add('show-map');
+            timerDiv.style.display='block';
+            initMap();
+            startTimer();
+        },1500);
+    } else {
+        alert("Not quite right 🤍");
+    }
+}
 
 // --- Timer ---
 function startTimer(){
@@ -145,7 +154,6 @@ function initMap(){
         minZoom:2,maxZoom:18
     }).addTo(map);
 
-    // Haus Icons
     var houseIcon = L.icon({
         iconUrl:'https://i.ibb.co/Tmbj8x9/house-icon.png',
         iconSize:[40,40]
