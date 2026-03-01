@@ -27,8 +27,8 @@ body{
     perspective:1400px;
 }
 
-/* BACK (Umschlag unten) */
-.bottom{
+/* ENVELOPE BOTTOM */
+.envelope-bottom{
     position:absolute;
     bottom:0;
     width:100%;
@@ -39,13 +39,21 @@ body{
     z-index:1;
 }
 
+/* LETTER CONTAINER (verdeckt unteren Teil des Briefes) */
+.letter-container{
+    position:absolute;
+    width:100%;
+    height:180px; /* nur den unteren Teil verdecken */
+    bottom:0;
+    overflow:hidden;
+    z-index:2;
+}
+
 /* LETTER */
 .letter{
-    position:absolute;
     width:110%;
     left:-5%;
     height:230px;
-    top:40px;
     padding:60px 60px;
     box-sizing:border-box;
     background:url('assets/paper-texture.png') center/cover no-repeat;
@@ -53,9 +61,8 @@ body{
     font-size:13px;
     line-height:1.8;
     color:#222;
-    transform:translateY(120px); /* Start unter der Lasche */
+    transform:translateY(120px); /* Start verdeckt */
     transition:transform 2.2s ease;
-    z-index:2;
 }
 
 .letter p{
@@ -77,7 +84,7 @@ body{
     backface-visibility:visible;
 }
 
-/* Siegel */
+/* SEAL */
 .seal{
     position:absolute;
     width:85px;
@@ -95,7 +102,7 @@ body{
 }
 
 .open .letter{
-    transform:translateY(-20px); /* fährt nur bis knapp unter die offene Lasche */
+    transform:translateY(-20px); /* fährt aus dem Umschlag heraus */
 }
 
 /* PASSWORD */
@@ -133,15 +140,17 @@ body{
 
 <div class="wrapper" id="wrapper">
 
-    <div class="bottom"></div>
+    <div class="envelope-bottom"></div>
 
-    <div class="letter">
-        <p>
-        For you and me.<br>
-        For us.<br>
-        For every "I miss you"<br>
-        and "See you soon".
-        </p>
+    <div class="letter-container">
+        <div class="letter">
+            <p>
+            For you and me.<br>
+            For us.<br>
+            For every "I miss you"<br>
+            and "See you soon".
+            </p>
+        </div>
     </div>
 
     <div class="flap"></div>
@@ -157,12 +166,6 @@ body{
 <script>
 const wrapper = document.getElementById("wrapper");
 
-window.addEventListener("load",()=>{
-    setTimeout(()=>{
-        wrapper.classList.add("open");
-    },600);
-});
-
 function openLetter(){
     const pw = document.getElementById("pw").value;
     if(pw === "14.04.2025"){
@@ -171,6 +174,13 @@ function openLetter(){
         alert("Incorrect password 🤍");
     }
 }
+
+// Optional: automatische Animation beim Laden
+window.addEventListener("load",()=>{
+    setTimeout(()=>{
+        wrapper.classList.add("open");
+    },600);
+});
 </script>
 
 </body>
