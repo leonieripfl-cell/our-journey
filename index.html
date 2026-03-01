@@ -13,8 +13,9 @@ body{
     height:100vh;
     display:flex;
     flex-direction:column;
-    justify-content:center;
+    justify-content:flex-start;
     align-items:center;
+    padding-top:120px;
     background:url('assets/fabric-blue.jpg') repeat;
 }
 
@@ -23,15 +24,16 @@ body{
     position:relative;
     width:420px;
     height:260px;
-    perspective:1400px;
+    perspective:1600px;
 }
 
-/* CLIPPING (verhindert Durchscheinen unten) */
+/* CONTAINER */
 .envelope-container{
     position:relative;
     width:100%;
     height:100%;
     overflow:hidden;
+    transform-style:preserve-3d;
 }
 
 /* BACK */
@@ -48,29 +50,29 @@ body{
 /* LETTER */
 .letter{
     position:absolute;
-    width:108%;
-    left:-4%;
-    height:210px;
+    width:110%;
+    left:-5%;
+    height:220px;
     top:40px;
-    padding:45px 40px;
+    padding:55px 50px;
     box-sizing:border-box;
     background:url('assets/paper-texture.png') center/cover no-repeat;
     font-family:'Courier Prime', monospace;
-    font-size:16px;
-    line-height:1.7;
+    font-size:14px;
+    line-height:1.8;
     color:#222;
-    transform:translateY(180px);
-    transition:transform 2.2s ease;
+    transform:translateY(200px);
+    transition:transform 2.5s ease;
     z-index:2;
 }
 
 /* TEXT */
 .letter p{
     margin:0;
-    margin-left:20px;
+    margin-left:35px;
 }
 
-/* FRONT (schräg) */
+/* FRONT (schräg geschnitten) */
 .envelope-front{
     position:absolute;
     width:100%;
@@ -94,29 +96,29 @@ body{
     background:url('assets/envelope-texture.jpg') center/cover no-repeat;
     clip-path: polygon(0 0, 50% 55%, 100% 0);
     transform-origin:top;
-    transition:transform 1.2s ease;
+    transition:transform 1.4s ease;
     z-index:4;
     backface-visibility:visible;
 }
 
-/* leichte Schattierung innen */
+/* Rückseite der Klappe */
 .flap::after{
     content:"";
     position:absolute;
     width:100%;
     height:100%;
-    background:rgba(0,0,0,0.08);
-    clip-path: polygon(0 0, 50% 55%, 100% 0);
+    background:url('assets/envelope-texture.jpg') center/cover no-repeat;
+    transform:rotateX(180deg);
 }
 
 /* SEAL */
 .seal{
     position:absolute;
-    width:80px;
-    height:80px;
+    width:85px;
+    height:85px;
     background:url('assets/div.seal.png') center/cover no-repeat;
-    top:88px;
-    left:170px;
+    top:85px;
+    left:168px;
     z-index:5;
 }
 
@@ -126,12 +128,12 @@ body{
 }
 
 .open .letter{
-    transform:translateY(-80px);
+    transform:translateY(-140px);
 }
 
 /* PASSWORD */
 .password-section{
-    margin-top:110px;
+    margin-top:140px;
     display:flex;
     gap:15px;
 }
@@ -163,8 +165,8 @@ body{
 <body>
 
 <div class="envelope-wrapper" id="envelope">
-
     <div class="envelope-container">
+
         <div class="envelope-back"></div>
 
         <div class="letter">
@@ -179,8 +181,8 @@ body{
         <div class="envelope-front"></div>
         <div class="flap"></div>
         <div class="seal"></div>
-    </div>
 
+    </div>
 </div>
 
 <div class="password-section">
