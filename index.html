@@ -8,138 +8,149 @@
 <link href="https://fonts.googleapis.com/css2?family=Courier+Prime&display=swap" rel="stylesheet">
 
 <style>
-body{
-    margin:0;
-    height:100vh;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:flex-start;
-    padding-top:150px;
-    background:url('assets/fabric-blue.jpg') repeat;
+body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding-top: 150px;
+    background: url('assets/fabric-blue.jpg') repeat;
 }
 
 /* WRAPPER */
-.wrapper{
-    position:relative;
-    width:420px;
-    height:260px;
-    perspective:1200px;
+.wrapper {
+    position: relative;
+    width: 420px;
+    height: 260px;
+    perspective: 1200px;
 }
 
-/* Umschlagboden */
-.envelope-bottom{
-    position:absolute;
-    bottom:0;
-    width:100%;
-    height:60%;
-    background:url('assets/envelope-texture.jpg') center/cover no-repeat;
-    border-bottom-left-radius:6px;
-    border-bottom-right-radius:6px;
-    z-index:1;
+/* ENVELOPE BACK – Rückseite des Umschlags (Rechteck) */
+.envelope-back {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 60%;
+    background: url('assets/envelope-texture.jpg') center/cover no-repeat;
+    border-radius: 6px;
+    z-index: 1;
 }
 
-/* Letter Container – begrenzt den Brief, overflow:hidden sorgt dafür, dass er nur teilweise sichtbar ist */
-.letter-container{
-    position:absolute;
-    bottom:0;
-    width:100%;
-    height:140px; /* nur unterer Teil verdeckt */
-    overflow:hidden;
-    z-index:2;
+/* LETTER CONTAINER – verdeckt unteren Teil des Briefes */
+.letter-container {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 140px; /* nur unteren Teil verdecken */
+    overflow: hidden;
+    z-index: 2;
 }
 
 /* LETTER */
-.letter{
-    width:110%;
-    left:-5%;
-    height:230px;
-    padding:60px 60px;
-    box-sizing:border-box;
-    background:url('assets/paper-texture.png') center/cover no-repeat;
-    font-family:'Courier Prime', monospace;
-    font-size:13px;
-    line-height:1.8;
-    color:#222;
-    transform:translateY(120px); /* Start unter der Maske */
-    transition:transform 2s ease;
+.letter {
+    width: 110%;
+    left: -5%;
+    height: 230px;
+    padding: 60px 60px;
+    box-sizing: border-box;
+    background: url('assets/paper-texture.png') center/cover no-repeat;
+    font-family: 'Courier Prime', monospace;
+    font-size: 13px;
+    line-height: 1.8;
+    color: #222;
+    transform: translateY(120px); /* Start verdeckt */
+    transition: transform 2s ease;
 }
 
-.letter p{
-    margin:0;
-    margin-left:40px;
+.letter p {
+    margin: 0;
+    margin-left: 40px;
 }
 
-/* FLAP – Dreieck */
-.flap{
-    position:absolute;
-    top:0;
-    width:100%;
-    height:55%;
-    background:url('assets/envelope-texture.jpg') center/cover no-repeat;
+/* ENVELOPE FRONT – Vorderseite mit Schrägen über dem Brief */
+.envelope-front {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 60%;
+    background: url('assets/envelope-texture.jpg') center/cover no-repeat;
+    clip-path: polygon(0 0, 0 100%, calc(50% - 42px) 100%, 50% 35px, calc(50% + 42px) 100%, 100% 100%, 100% 0);
+    z-index: 3;
+}
+
+/* FLAP – Dreieckige Klappe oben */
+.flap {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 55%;
+    background: url('assets/envelope-texture.jpg') center/cover no-repeat;
     clip-path: polygon(0 0, 50% 100%, 100% 0);
-    transform-origin:top;
-    transition:transform 1.5s ease;
-    z-index:3;
+    transform-origin: top;
+    transition: transform 1.5s ease;
+    z-index: 4;
 }
 
 /* Siegel */
-.seal{
-    position:absolute;
-    width:85px;
-    height:85px;
-    background:url('assets/div.seal.png') center/cover no-repeat;
-    top:85px;
-    left:168px;
-    z-index:4;
+.seal {
+    position: absolute;
+    width: 85px;
+    height: 85px;
+    background: url('assets/div.seal.png') center/cover no-repeat;
+    top: 85px;
+    left: 168px;
+    z-index: 5;
 }
 
 /* OPEN STATE */
-.open .flap{
-    transform:rotateX(180deg);
+.open .flap {
+    transform: rotateX(180deg);
 }
 
-.open .letter{
-    transform:translateY(-50px); /* fährt aus dem Umschlag, nicht zu hoch */
+.open .letter {
+    transform: translateY(-50px); /* fährt nur unter die geöffnete Lasche */
 }
 
 /* PASSWORD */
-.password{
-    margin-top:160px;
-    display:flex;
-    gap:15px;
+.password {
+    margin-top: 160px;
+    display: flex;
+    gap: 15px;
 }
 
-.password input{
-    padding:12px 18px;
-    border-radius:8px;
-    border:1px solid #ccc;
-    font-size:16px;
-    text-align:center;
-    width:200px;
+.password input {
+    padding: 12px 18px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+    text-align: center;
+    width: 200px;
 }
 
-.password button{
-    padding:12px 20px;
-    border:none;
-    border-radius:8px;
-    background:#8b0000;
-    color:white;
-    cursor:pointer;
+.password button {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    background: #8b0000;
+    color: white;
+    cursor: pointer;
 }
 
-.password button:hover{
-    background:#6e0000;
+.password button:hover {
+    background: #6e0000;
 }
 </style>
 </head>
-
 <body>
 
 <div class="wrapper" id="wrapper">
 
-    <div class="envelope-bottom"></div>
+    <!-- Rückseite des Umschlags -->
+    <div class="envelope-back"></div>
 
+    <!-- Letter -->
     <div class="letter-container">
         <div class="letter">
             <p>
@@ -151,7 +162,13 @@ body{
         </div>
     </div>
 
+    <!-- Vorderseite mit Schrägen -->
+    <div class="envelope-front"></div>
+
+    <!-- Klappe -->
     <div class="flap"></div>
+
+    <!-- Siegel -->
     <div class="seal"></div>
 
 </div>
@@ -164,11 +181,11 @@ body{
 <script>
 const wrapper = document.getElementById("wrapper");
 
-function openLetter(){
+function openLetter() {
     const pw = document.getElementById("pw").value;
-    if(pw === "14.04.2025"){
+    if(pw === "14.04.2025") {
         wrapper.classList.add("open");
-    }else{
+    } else {
         alert("Incorrect password 🤍");
     }
 }
