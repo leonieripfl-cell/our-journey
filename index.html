@@ -5,138 +5,157 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Our Letter</title>
 
-<!-- Handschriftliche Schrift -->
 <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
 
 <style>
 body {
-    margin:0; padding:0;
-    height:100vh; width:100vw;
-    display:flex; justify-content:center; align-items:center;
+    margin:0;
+    height:100vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
     background: url('assets/fabric-blue.jpg') repeat;
     font-family: Georgia, serif;
-    overflow:hidden;
 }
 
 /* Umschlag Container */
 .envelope-wrapper {
     position: relative;
-    width: 400px; height: 250px;
-    perspective: 1000px;
+    width: 420px;
+    height: 260px;
+    perspective: 1200px;
 }
 
 /* Umschlag */
 .envelope {
-    width:100%; height:100%;
+    position:absolute;
+    width:100%;
+    height:100%;
     background: url('assets/envelope-texture.jpg') center/cover no-repeat;
-    border:1px solid #d6cbb7;
-    border-radius:4px;
-    box-shadow:0 10px 20px rgba(0,0,0,0.2);
-    position:absolute; top:0; left:0;
-    z-index:1;
+    border-radius:6px;
+    box-shadow:0 15px 30px rgba(0,0,0,0.25);
+    z-index:2;
 }
 
-/* Umschlagklappe */
+/* Klappe */
 .flap {
     position:absolute;
-    width:100%; height:100%;
+    width:100%;
+    height:100%;
     background:#f4d7c2;
-    clip-path: polygon(0 0, 50% 50%, 100% 0);
+    clip-path: polygon(0 0, 50% 55%, 100% 0);
     transform-origin: top;
-    transition: transform 1s ease;
-    z-index:3;
-    border-bottom:1px solid #d6cbb7;
+    transition: transform 1.2s ease;
+    z-index:4;
 }
 
 /* Wachssiegel */
 .seal {
     position:absolute;
-    width:50px; height:50px;
+    width:70px;
+    height:70px;
     background: url('assets/div.seal.png') center/cover no-repeat;
-    top:100px; left:175px;
+    top:95px;
+    left:175px;
     z-index:5;
 }
 
-/* Brief */
+/* Briefpapier */
 .letter {
     position:absolute;
-    width:90%; height:180px;
-    top:20px; left:5%;
-    padding:20px; box-sizing:border-box;
+    width:92%;
+    height:240px;
+    left:4%;
+    top:40px;
+    padding:30px;
+    box-sizing:border-box;
     background: url('assets/paper-texture.png') center/cover no-repeat;
-    font-family: 'Dancing Script', cursive;
-    font-size:22px;
-    line-height:1.3;
+    font-family:'Dancing Script', cursive;
+    font-size:24px;
     color:#333;
-    transform: translateY(100%);
-    transition: transform 1.5s ease;
-    z-index:4;
-    display:flex; flex-direction:column; justify-content:flex-end;
+    transform: translateY(160px);
+    transition: transform 1.8s ease;
+    z-index:1;
 }
 
-/* Passwortfeld */
-.password-section {
-    margin-top:10px;
-    display:flex; justify-content:center; gap:10px;
+/* Animation */
+.open .flap {
+    transform: rotateX(180deg);
 }
+
+.open .letter {
+    transform: translateY(-120px);
+}
+
+/* Passwortbereich */
+.password-section {
+    margin-top:40px;
+    display:flex;
+    gap:12px;
+}
+
 .password-section input {
-    padding:8px 12px;
-    border-radius:6px;
+    padding:10px 15px;
+    border-radius:8px;
     border:1px solid #ccc;
     font-size:16px;
-    width:150px;
     text-align:center;
+    width:180px;
 }
+
 .password-section button {
-    padding:8px 12px;
+    padding:10px 18px;
     border:none;
-    border-radius:6px;
+    border-radius:8px;
     background:#8b0000;
     color:white;
     cursor:pointer;
 }
-.password-section button:hover { background:#6e0000; }
 
-/* Animation Umschlag öffnen */
-.open .flap { transform: rotateX(180deg); }
-.open .letter { transform: translateY(-120px); }
-
+.password-section button:hover {
+    background:#6e0000;
+}
 </style>
 </head>
 
 <body>
 
 <div class="envelope-wrapper" id="envelope">
+    <div class="letter">
+        For you and me.<br>
+        For us.<br>
+        For every "I miss you"<br>
+        and "See you soon".
+    </div>
     <div class="envelope"></div>
     <div class="flap"></div>
     <div class="seal"></div>
-    <div class="letter" id="letter">
-        <p>For you and me.<br>For us.<br>For every "I miss you" and "See you soon".</p>
-        <div class="password-section">
-            <input type="password" id="password" placeholder="Enter date">
-            <button onclick="checkPassword()">Open</button>
-        </div>
-    </div>
+</div>
+
+<div class="password-section">
+    <input type="password" id="password" placeholder="Enter date">
+    <button onclick="checkPassword()">Open</button>
 </div>
 
 <script>
-const envelope = document.getElementById('envelope');
+const envelope = document.getElementById("envelope");
+
+window.addEventListener("load", ()=>{
+    setTimeout(()=>{
+        envelope.classList.add("open");
+    },600);
+});
 
 function checkPassword(){
-    const pw = document.getElementById('password').value;
+    const pw = document.getElementById("password").value;
     if(pw === "14.04.2025"){
-        alert("Correct! Weiter geht's…");
-        // Optional: Karte anzeigen / weiterleiten:
-        // window.location.href = "map.html";
+        alert("Correct 🤍");
+        // später: window.location.href = "map.html";
     } else {
         alert("Incorrect password 🤍");
     }
 }
-
-// Umschlag automatisch öffnen beim Laden
-window.addEventListener('load', ()=>{
-    setTimeout(()=>{ envelope.classList.add('open'); }, 500);
-});
 </script>
 
 </body>
