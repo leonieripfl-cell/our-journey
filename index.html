@@ -5,151 +5,153 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>For Us</title>
 
+<!-- Handschriftliche Schrift -->
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+
+<!-- Leaflet CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+
 <style>
 body {
-    margin: 0;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: #f4f1ea;
-    font-family: 'Georgia', serif;
-    overflow: hidden;
+    margin:0; padding:0; font-family: Georgia, serif; background:#f4f1ea; overflow:hidden;
 }
 
+#map {
+    width: 100vw; height: 100vh;
+    display:none; /* Karte versteckt bis Umschlag geöffnet */
+}
+
+/* Timer */
+.timer {
+    position: absolute; top: 10px; right: 20px;
+    background: rgba(255,255,255,0.8); padding:10px; border-radius:8px;
+    font-size:18px; z-index:1000; display:none;
+}
+
+/* Umschlag Container */
 .envelope-wrapper {
-    position: relative;
-    width: 350px;
-    height: 220px;
-    cursor: pointer;
+    position: absolute;
+    width: 400px; height: 250px;
+    top:50%; left:50%; transform:translate(-50%,-50%);
+    cursor:pointer; z-index:1000;
 }
 
+/* Umschlag */
 .envelope {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background: #e8dfcf;
+    width:100%; height:100%;
+    background: url('https://i.ibb.co/1rz0y3L/paper-texture.jpg') center/cover no-repeat;
     border: 1px solid #d6cbb7;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    position:absolute; top:0; left:0;
 }
 
 .flap {
-    position: absolute;
-    width: 100%;
-    height: 100%;
+    position: absolute; width: 100%; height: 100%;
     background: #e2d7c2;
     clip-path: polygon(0 0, 50% 50%, 100% 0);
     transform-origin: top;
     transition: transform 1s ease;
     border-bottom: 1px solid #d6cbb7;
+    z-index:2;
 }
 
+/* Wachssiegel */
 .seal {
-    position: absolute;
-    width: 50px;
-    height: 50px;
-    background: #8b0000; /* Dunkelrot Wachssiegel */
-    border-radius: 50%;
-    top: 85px;
-    left: 150px;
+    position:absolute; width:50px; height:50px;
+    background: radial-gradient(circle at 30% 30%, #ff3333, #8b0000);
+    border-radius:50%;
+    top:100px; left:175px;
     box-shadow: inset -3px -3px 5px rgba(0,0,0,0.4);
-    z-index: 3;
+    z-index:3;
 }
 
+/* Brief */
 .letter {
-    position: absolute;
-    width: 90%;
-    height: 180px;
-    background: #fffdf8;
-    top: 20px;
-    left: 5%;
-    padding: 20px;
-    box-sizing: border-box;
-    text-align: center;
-    transform: translateY(100%);
-    transition: transform 1s ease;
-    z-index: 1;
+    position:absolute; width:90%; height:180px;
+    top:20px; left:5%; padding:20px; box-sizing:border-box;
+    background:#fff8e7; text-align:center; font-family:'Dancing Script', cursive;
+    font-size:24px; line-height:1.3;
+    transform: translateY(100%); transition: transform 1.5s ease;
+    z-index:1;
+    cursor:pointer;
 }
 
-.open .flap {
-    transform: rotateX(180deg);
-}
+/* Animation geöffnet */
+.open .flap { transform: rotateX(180deg); }
+.open .letter { transform: translateY(-120px); }
 
-.open .letter {
-    transform: translateY(-120px);
-}
+/* Karte fadein */
+.show-map { display:block; animation: fadeIn 1s forwards; }
+@keyframes fadeIn { from {opacity:0;} to {opacity:1;} }
 
-.password-section {
-    margin-top: 15px;
-}
-
-input {
-    padding: 8px;
-    border: 1px solid #ccc;
-    font-family: Georgia, serif;
-}
-
-button {
-    padding: 8px 12px;
-    margin-left: 5px;
-    background: #8b0000;
-    color: white;
-    border: none;
-    cursor: pointer;
-}
-
-button:hover {
-    background: #6e0000;
-}
-
-.fade-out {
-    animation: fadeOut 1.5s forwards;
-}
-
-@keyframes fadeOut {
-    to {
-        opacity: 0;
-        visibility: hidden;
-    }
-}
 </style>
 </head>
-
 <body>
 
-<div class="envelope-wrapper" onclick="openEnvelope()">
+<div class="envelope-wrapper" id="envelope">
     <div class="envelope"></div>
     <div class="flap"></div>
     <div class="seal"></div>
-    <div class="letter">
-        <p>
-            For you and me.<br>
-            For us.<br>
-            For every "I miss you" and "See you soon".
-        </p>
-
-        <div class="password-section">
-            <input type="password" id="password" placeholder="Enter date">
-            <button onclick="checkPassword(event)">Open</button>
-        </div>
+    <div class="letter" id="letter">
+        For you and me.<br>
+        For us.<br>
+        For every "I miss you" and "See you soon".
     </div>
 </div>
 
+<div class="timer" id="timer">Loading timer...</div>
+<div id="map"></div>
+
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
 <script>
-function openEnvelope() {
-    document.querySelector('.envelope-wrapper').classList.add('open');
+// --- Umschlag öffnen & Brief animieren ---
+const envelope = document.getElementById('envelope');
+const letter = document.getElementById('letter');
+const mapDiv = document.getElementById('map');
+const timerDiv = document.getElementById('timer');
+
+envelope.addEventListener('click', ()=>{
+    envelope.classList.add('open');
+    // Nach 2 Sekunden Karte einblenden
+    setTimeout(()=>{
+        envelope.style.display='none';
+        mapDiv.classList.add('show-map');
+        timerDiv.style.display='block';
+        initMap(); // Karte initialisieren
+        startTimer();
+    },2000);
+});
+
+// --- Timer ---
+function startTimer(){
+    var start = new Date("2023-08-01T00:00:00");
+    function update(){
+        var now = new Date();
+        var diff = now - start;
+        var days = Math.floor(diff/(1000*60*60*24));
+        timerDiv.innerText = days+" days together ❤️";
+    }
+    setInterval(update,1000);
+    update();
 }
 
-function checkPassword(event) {
-    event.stopPropagation();
-    const password = document.getElementById('password').value;
-    if (password === "14.04.2025") {
-        document.body.classList.add('fade-out');
-        setTimeout(() => {
-            window.location.href = "map.html";
-        }, 1500);
-    } else {
-        alert("Not quite right 🤍");
-    }
+// --- Leaflet Karte ---
+function initMap(){
+    var map = L.map('map').setView([50,10],4);
+    L.tileLayer('https://stamen-tiles.a.ssl.fastly.net/terrain/{z}/{x}/{y}.jpg',{
+        attribution:'Map tiles by Stamen Design',
+        minZoom:2,maxZoom:18
+    }).addTo(map);
+
+    // Haus Icons
+    var houseIcon = L.icon({
+        iconUrl:'https://i.ibb.co/Tmbj8x9/house-icon.png',
+        iconSize:[40,40]
+    });
+    L.marker([48.2082,16.3738], {icon:houseIcon}).addTo(map).bindPopup("Wien 🏠");
+    L.marker([55.9533,-3.1883], {icon:houseIcon}).addTo(map).bindPopup("Edinburgh 🏠");
 }
 </script>
 
