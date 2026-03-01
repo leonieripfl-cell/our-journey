@@ -6,51 +6,82 @@
 <title>Our Journey</title>
 
 <!-- Leaflet CSS -->
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
- integrity="sha256-sA+4fNfQ2VhP6XVRpG0Fw/0y4kZzUYoB01q+3yTtY3o=" crossorigin=""/>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 
 <style>
 body { margin:0; padding:0; font-family:Georgia, serif; background:#f4f1ea; }
 #map { width: 100vw; height: 100vh; }
+
+/* Timer */
 .timer {
     position: absolute; top: 10px; right: 20px;
     background: rgba(255,255,255,0.8); padding:10px; border-radius:8px;
     font-size:18px; z-index:1000;
 }
+
+/* Papierflieger */
+.plane {
+    width: 40px; height: 40px;
+    position: absolute; z-index:1000;
+    background: url('https://i.ibb.co/2h6Kp3D/white-paper-plane.png') no-repeat center/contain;
+    display: none;
+}
+
+/* Pinnnadel Popup (Scrapbook) */
+.popup-photo {
+    width: 200px;
+}
+.popup-photo img {
+    width: 100%;
+    transform: rotate(-5deg);
+    border: 2px solid #fff;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    position: relative;
+}
+.popup-photo .tape {
+    position: absolute;
+    width: 40px; height: 15px;
+    background: #ffe4b5;
+    top: -5px; left: 30px;
+    transform: rotate(-15deg);
+}
+
+/* Tag/Nacht Modus */
+body.night { background:#2c2c2c; }
+.leaflet-tile { filter: brightness(0.9) saturate(0.9); }
 </style>
 </head>
 <body>
 
 <div class="timer" id="timer">Loading timer...</div>
 <div id="map"></div>
+<div class="plane" id="plane"></div>
 
 <!-- Leaflet JS -->
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
- integrity="sha256-o+Zk3p6N3Xo0FkRfZ8Ww5C2Hq9w2KPh3y2XygfF8Bjo=" crossorigin=""></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <script>
-// 1️⃣ Karte initialisieren
-var map = L.map('map', {zoomControl:true}).setView([50, 10], 4); // Zoom auf Europa
+// --- Karte initialisieren ---
+var map = L.map('map', {zoomControl:true}).setView([50, 10], 4);
 
-// 2️⃣ Vintage/leicht pastellfarbiger Tile-Layer
 L.tileLayer('https://stamen-tiles.a.ssl.fastly.net/terrain/{z}/{x}/{y}.jpg', {
     attribution: 'Map tiles by Stamen Design',
     minZoom: 2,
     maxZoom: 18
 }).addTo(map);
 
-// 3️⃣ Haus-Icons
+// --- Haus-Icons ---
 var houseIcon = L.icon({
-    iconUrl: 'https://i.ibb.co/Tmbj8x9/house-icon.png', // wir ersetzen später durch gezeichnete Version
+    iconUrl: 'https://i.ibb.co/Tmbj8x9/house-icon.png',
     iconSize: [40, 40]
 });
 
-L.marker([48.2082,16.3738], {icon: houseIcon}).addTo(map).bindPopup("Wien 🏠");
-L.marker([55.9533,-3.1883], {icon: houseIcon}).addTo(map).bindPopup("Edinburgh 🏠"); // Edinburgh-Koordinaten
+var wienMarker = L.marker([48.2082,16.3738], {icon: houseIcon}).addTo(map).bindPopup("Wien 🏠");
+var edinburghMarker = L.marker([55.9533,-3.1883], {icon: houseIcon}).addTo(map).bindPopup("Edinburgh 🏠");
 
-// 4️⃣ Beziehungstimer
+// --- Beziehungstimer ---
 function updateTimer(){
-    var start = new Date("2023-08-01T00:00:00"); // Hier euer Startdatum
+    var start = new Date("2023-08-01T00:00:00");
     var now = new Date();
     var diff = now - start;
     var days = Math.floor(diff / (1000*60*60*24));
@@ -58,6 +89,57 @@ function updateTimer(){
 }
 setInterval(updateTimer,1000);
 updateTimer();
+
+// --- Papierflieger Animation ---
+function flyPlane(fromLatLng, toLatLng){
+    const plane = document.getElementById('plane');
+    const fromPoint = map.latLngToContainerPoint(fromLatLng);
+    const toPoint = map.latLngToContainerPoint(toLatLng);
+    plane.style.display = 'block';
+    plane.style.left = fromPoint.x + 'px';
+    plane.style.top = fromPoint.y + 'px';
+
+    let t = 0;
+    const duration = 5000; // 5 Sekunden
+    function animate(){
+        t += 20;
+        const progress = t/duration;
+        if(progress>1){ plane.style.display='none'; return; }
+
+        // leichte Kurve: y = lerp + sin(progress*PI)*50
+        const x = fromPoint.x + (toPoint.x - fromPoint.x)*progress;
+        const y = fromPoint.y + (toPoint.y - fromPoint.y)*progress + Math.sin(progress*Math.PI)*-50;
+        plane.style.left = x+'px';
+        plane.style.top = y+'px';
+
+        requestAnimationFrame(animate);
+    }
+    animate();
+}
+
+// Beispiel: Klick auf Häuser fliegt Papierflieger
+wienMarker.on('click', ()=>{ flyPlane([48.2082,16.3738],[55.9533,-3.1883]); });
+edinburghMarker.on('click', ()=>{ flyPlane([55.9533,-3.1883],[48.2082,16.3738]); });
+
+// --- Pinnnadeln & Scrapbook ---
+var redPinIcon = L.icon({
+    iconUrl:'https://i.ibb.co/5n0tLhb/red-pin.png',
+    iconSize:[30,40]
+});
+
+// Beispiel Pinnnadel
+var exampleMarker = L.marker([52.52,13.405], {icon:redPinIcon}).addTo(map).bindPopup(`
+<div class="popup-photo">
+    <div class="tape"></div>
+    <img src="https://i.ibb.co/LkKXr7H/berlin-photo.jpg" alt="Photo">
+</div>
+`);
+
+// --- Tag/Nacht Modus: je nach Uhrzeit ---
+var hour = new Date().getHours();
+if(hour>=20 || hour<6){
+    document.body.classList.add('night');
+}
 </script>
 
 </body>
