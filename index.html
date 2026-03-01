@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Our Letter</title>
+<title>Letter</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Courier+Prime&display=swap" rel="stylesheet">
 
@@ -13,18 +13,17 @@ body{
     height:100vh;
     display:flex;
     flex-direction:column;
-    justify-content:flex-start;
     align-items:center;
-    padding-top:140px;
+    justify-content:flex-start;
+    padding-top:150px;
     background:url('assets/fabric-blue.jpg') repeat;
 }
 
 /* WRAPPER */
-.envelope-wrapper{
+.wrapper{
     position:relative;
     width:420px;
     height:260px;
-    perspective:2000px;
 }
 
 /* LETTER */
@@ -34,85 +33,62 @@ body{
     left:-5%;
     height:230px;
     top:40px;
-    padding:60px 55px;
+    padding:60px 60px;
     box-sizing:border-box;
     background:url('assets/paper-texture.png') center/cover no-repeat;
     font-family:'Courier Prime', monospace;
     font-size:13px;
-    line-height:1.9;
+    line-height:1.8;
     color:#222;
-    transform:translateY(200px);
-    transition:transform 2.5s ease;
+    transform:translateY(180px);
+    transition:transform 2.2s ease;
     z-index:1;
 }
 
 .letter p{
     margin:0;
-    margin-left:45px;
+    margin-left:40px;
 }
 
-/* ENVELOPE SHELL */
-.envelope-shell{
+/* ENVELOPE BASE */
+.envelope{
     position:absolute;
     width:100%;
     height:100%;
-    top:0;
-    left:0;
+    z-index:2;
 }
 
 /* BACK */
-.envelope-back{
+.back{
     position:absolute;
     width:100%;
     height:100%;
     background:url('assets/envelope-texture.jpg') center/cover no-repeat;
     border-radius:6px;
     box-shadow:0 15px 30px rgba(0,0,0,0.25);
-    z-index:2;
 }
 
-/* FRONT (nur unterer Teil – keine Dreiecksspitze!) */
-.envelope-front{
+/* BOTTOM PART (verdeckt nur unten!) */
+.bottom{
     position:absolute;
     bottom:0;
     width:100%;
-    height:65%;
+    height:60%;
     background:url('assets/envelope-texture.jpg') center/cover no-repeat;
     border-bottom-left-radius:6px;
     border-bottom-right-radius:6px;
-    z-index:3;
 }
 
-/* FLAP */
+/* FLAP – EIN einziges Dreieck */
 .flap{
     position:absolute;
     width:100%;
-    height:100%;
-    transform-style:preserve-3d;
+    height:55%;
+    top:0;
+    background:url('assets/envelope-texture.jpg') center/cover no-repeat;
+    clip-path: polygon(0 0, 50% 100%, 100% 0);
     transform-origin:top;
-    transition:transform 1.5s ease;
-    z-index:4;
-}
-
-/* Vorderseite */
-.flap-front{
-    position:absolute;
-    width:100%;
-    height:100%;
-    background:url('assets/envelope-texture.jpg') center/cover no-repeat;
-    clip-path: polygon(0 0, 50% 55%, 100% 0);
-    backface-visibility:hidden;
-}
-
-/* Rückseite */
-.flap-back{
-    position:absolute;
-    width:100%;
-    height:100%;
-    background:url('assets/envelope-texture.jpg') center/cover no-repeat;
-    clip-path: polygon(0 0, 50% 55%, 100% 0);
-    transform:rotateX(180deg);
-    backface-visibility:hidden;
+    transition:transform 1.3s ease;
 }
 
 /* SEAL */
@@ -123,26 +99,31 @@ body{
     background:url('assets/div.seal.png') center/cover no-repeat;
     top:85px;
     left:168px;
-    z-index:5;
+    z-index:3;
+    transition:opacity 0.5s ease;
 }
 
-/* ANIMATION */
+/* OPEN STATE */
 .open .flap{
     transform:rotateX(180deg);
 }
 
 .open .letter{
-    transform:translateY(-130px);
+    transform:translateY(-120px);
+}
+
+.open .seal{
+    opacity:0;
 }
 
 /* PASSWORD */
-.password-section{
+.password{
     margin-top:160px;
     display:flex;
     gap:15px;
 }
 
-.password-section input{
+.password input{
     padding:12px 18px;
     border-radius:8px;
     border:1px solid #ccc;
@@ -151,7 +132,7 @@ body{
     width:200px;
 }
 
-.password-section button{
+.password button{
     padding:12px 20px;
     border:none;
     border-radius:8px;
@@ -159,16 +140,12 @@ body{
     color:white;
     cursor:pointer;
 }
-
-.password-section button:hover{
-    background:#6e0000;
-}
 </style>
 </head>
 
 <body>
 
-<div class="envelope-wrapper" id="envelope">
+<div class="wrapper" id="wrapper">
 
     <div class="letter">
         <p>
@@ -179,41 +156,31 @@ body{
         </p>
     </div>
 
-    <div class="envelope-shell">
-        <div class="envelope-back"></div>
-        <div class="envelope-front"></div>
-
-        <div class="flap">
-            <div class="flap-front"></div>
-            <div class="flap-back"></div>
-        </div>
-
+    <div class="envelope">
+        <div class="back"></div>
+        <div class="bottom"></div>
+        <div class="flap"></div>
         <div class="seal"></div>
     </div>
 
 </div>
 
-<div class="password-section">
-    <input type="password" id="password" placeholder="Enter date">
-    <button onclick="checkPassword()">Open</button>
+<div class="password">
+    <input type="password" id="pw" placeholder="Enter date">
+    <button onclick="openLetter()">Open</button>
 </div>
 
 <script>
-const envelope=document.getElementById("envelope");
+const wrapper = document.getElementById("wrapper");
 
 window.addEventListener("load",()=>{
     setTimeout(()=>{
-        envelope.classList.add("open");
+        wrapper.classList.add("open");
     },600);
 });
 
-function checkPassword(){
-    const pw=document.getElementById("password").value;
-    if(pw==="14.04.2025"){
-        alert("Correct 🤍");
-    }else{
-        alert("Incorrect password 🤍");
-    }
+function openLetter(){
+    wrapper.classList.add("open");
 }
 </script>
 
