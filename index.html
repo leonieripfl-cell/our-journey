@@ -155,9 +155,9 @@ function initMap(){
     }).addTo(map);
 
     var houseIcon = L.icon({
-        iconUrl:'https://i.ibb.co/Tmbj8x9/house-icon.png',
-        iconSize:[40,40]
-    });
+    iconUrl:'assets/house.png',
+    iconSize:[40,40]
+});
     L.marker([48.2082,16.3738], {icon:houseIcon}).addTo(map).bindPopup("Wien 🏠");
     L.marker([55.9533,-3.1883], {icon:houseIcon}).addTo(map).bindPopup("Edinburgh 🏠");
 }
