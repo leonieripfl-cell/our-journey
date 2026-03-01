@@ -4,9 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Our Letter</title>
-
 <link href="https://fonts.googleapis.com/css2?family=Courier+Prime&display=swap" rel="stylesheet">
-
 <style>
 body {
     margin: 0;
@@ -19,7 +17,7 @@ body {
     background: url('assets/fabric-blue.jpg') repeat;
 }
 
-/* WRAPPER */
+/* Wrapper */
 .wrapper {
     position: relative;
     width: 420px;
@@ -27,7 +25,7 @@ body {
     perspective: 1200px;
 }
 
-/* ENVELOPE BACK – Rückseite des Umschlags (Rechteck) */
+/* Umschlag-Rückseite */
 .envelope-back {
     position: absolute;
     bottom: 0;
@@ -38,17 +36,17 @@ body {
     z-index: 1;
 }
 
-/* LETTER CONTAINER – verdeckt unteren Teil des Briefes */
+/* Letter Container */
 .letter-container {
     position: absolute;
     bottom: 0;
     width: 100%;
-    height: 140px; /* nur unteren Teil verdecken */
+    height: 180px; /* verdeckt unteren Teil */
     overflow: hidden;
     z-index: 2;
 }
 
-/* LETTER */
+/* Letter */
 .letter {
     width: 110%;
     left: -5%;
@@ -60,7 +58,7 @@ body {
     font-size: 13px;
     line-height: 1.8;
     color: #222;
-    transform: translateY(120px); /* Start verdeckt */
+    transform: translateY(120px); /* Start unter Umschlag */
     transition: transform 2s ease;
 }
 
@@ -69,18 +67,24 @@ body {
     margin-left: 40px;
 }
 
-/* ENVELOPE FRONT – Vorderseite mit Schrägen über dem Brief */
+/* Umschlag-Vorderseite (Schrägen) */
 .envelope-front {
     position: absolute;
     bottom: 0;
     width: 100%;
     height: 60%;
     background: url('assets/envelope-texture.jpg') center/cover no-repeat;
-    clip-path: polygon(0 0, 0 100%, calc(50% - 42px) 100%, 50% 35px, calc(50% + 42px) 100%, 100% 100%, 100% 0);
+    clip-path: polygon(
+        0 0, 
+        0 100%, 
+        50% 60px, 
+        100% 100%, 
+        100% 0
+    ); /* obere Ecken zum Siegel */
     z-index: 3;
 }
 
-/* FLAP – Dreieckige Klappe oben */
+/* Klappe */
 .flap {
     position: absolute;
     top: 0;
@@ -110,10 +114,10 @@ body {
 }
 
 .open .letter {
-    transform: translateY(-50px); /* fährt nur unter die geöffnete Lasche */
+    transform: translateY(-90px); /* etwa bis Hälfte der Klappenhöhe */
 }
 
-/* PASSWORD */
+/* Passwortfeld */
 .password {
     margin-top: 160px;
     display: flex;
@@ -190,7 +194,7 @@ function openLetter() {
     }
 }
 
-// Optional: automatische Animation beim Laden
+// Automatische Animation beim Laden
 window.addEventListener("load",()=>{
     setTimeout(()=>{
         wrapper.classList.add("open");
