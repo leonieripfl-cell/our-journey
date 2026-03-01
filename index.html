@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For Us</title>
+
+<style>
+body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #f4f1ea;
+    font-family: 'Georgia', serif;
+    overflow: hidden;
+}
+
+.envelope-wrapper {
+    position: relative;
+    width: 350px;
+    height: 220px;
+    cursor: pointer;
+}
+
+.envelope {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: #e8dfcf;
+    border: 1px solid #d6cbb7;
+}
+
+.flap {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: #e2d7c2;
+    clip-path: polygon(0 0, 50% 50%, 100% 0);
+    transform-origin: top;
+    transition: transform 1s ease;
+    border-bottom: 1px solid #d6cbb7;
+}
+
+.seal {
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    background: #8b0000; /* Dunkelrot Wachssiegel */
+    border-radius: 50%;
+    top: 85px;
+    left: 150px;
+    box-shadow: inset -3px -3px 5px rgba(0,0,0,0.4);
+    z-index: 3;
+}
+
+.letter {
+    position: absolute;
+    width: 90%;
+    height: 180px;
+    background: #fffdf8;
+    top: 20px;
+    left: 5%;
+    padding: 20px;
+    box-sizing: border-box;
+    text-align: center;
+    transform: translateY(100%);
+    transition: transform 1s ease;
+    z-index: 1;
+}
+
+.open .flap {
+    transform: rotateX(180deg);
+}
+
+.open .letter {
+    transform: translateY(-120px);
+}
+
+.password-section {
+    margin-top: 15px;
+}
+
+input {
+    padding: 8px;
+    border: 1px solid #ccc;
+    font-family: Georgia, serif;
+}
+
+button {
+    padding: 8px 12px;
+    margin-left: 5px;
+    background: #8b0000;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #6e0000;
+}
+
+.fade-out {
+    animation: fadeOut 1.5s forwards;
+}
+
+@keyframes fadeOut {
+    to {
+        opacity: 0;
+        visibility: hidden;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="envelope-wrapper" onclick="openEnvelope()">
+    <div class="envelope"></div>
+    <div class="flap"></div>
+    <div class="seal"></div>
+    <div class="letter">
+        <p>
+            For you and me.<br>
+            For us.<br>
+            For every "I miss you" and "See you soon".
+        </p>
+
+        <div class="password-section">
+            <input type="password" id="password" placeholder="Enter date">
+            <button onclick="checkPassword(event)">Open</button>
+        </div>
+    </div>
+</div>
+
+<script>
+function openEnvelope() {
+    document.querySelector('.envelope-wrapper').classList.add('open');
+}
+
+function checkPassword(event) {
+    event.stopPropagation();
+    const password = document.getElementById('password').value;
+    if (password === "14.04.2025") {
+        document.body.classList.add('fade-out');
+        setTimeout(() => {
+            window.location.href = "map.html";
+        }, 1500);
+    } else {
+        alert("Not quite right 🤍");
+    }
+}
+</script>
+
+</body>
+</html>
