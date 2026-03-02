@@ -1,178 +1,74 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Letter</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Courier+Prime&display=swap" rel="stylesheet">
+<title>Envelope Base</title>
 
 <style>
-body{
-    margin:0;
-    height:100vh;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    padding-top:150px;
-    background:url('assets/fabric-blue.jpg') repeat;
+body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: url('assets/fabric-blue.jpg') repeat;
 }
 
-/* WRAPPER */
-.wrapper{
-    position:relative;
-    width:420px;
-    height:300px;
+/* Wrapper */
+.wrapper {
+    position: relative;
+    width: 420px;
+    height: 260px;
 }
 
-/* UMSCHLAG RECHTECK (RÜCKSEITE) */
-.envelope-back{
-    position:absolute;
-    bottom:0;
-    width:100%;
-    height:200px;
-    background:url('assets/envelope-texture.jpg') center/cover no-repeat;
-    border-radius:6px;
-    z-index:1;
+/* Umschlag-Rückseite */
+.envelope-back {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 200px;
+    background: url('assets/envelope-texture.jpg') center/cover no-repeat;
+    border-radius: 6px;
 }
 
-/* BRIEF */
-.letter{
-    position:absolute;
-    bottom:0;
-    left:5%;
-    width:90%;
-    height:260px;
-    padding:70px 60px;
-    box-sizing:border-box;
-    background:url('assets/paper-texture.png') center/cover no-repeat;
-    font-family:'Courier Prime', monospace;
-    font-size:12px;
-    line-height:1.7;
-    color:#222;
-    transform:translateY(180px); /* startet tief genug */
-    transition:transform 2s ease;
-    z-index:2;
+/* Passwortfeld */
+.password {
+    margin-top: 60px;
+    display: flex;
+    gap: 15px;
 }
 
-.letter p{
-    margin-left:50px;
+.password input {
+    padding: 12px 18px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    width: 200px;
+    text-align: center;
 }
 
-/* VORDERSEITE MIT SCHRÄGEN */
-.envelope-front{
-    position:absolute;
-    bottom:0;
-    width:100%;
-    height:200px;
-    background:url('assets/envelope-texture.jpg') center/cover no-repeat;
-    clip-path:polygon(
-        0% 0%,
-        0% 100%,
-        50% 55%,
-        100% 100%,
-        100% 0%
-    );
-    z-index:3;
-}
-
-/* KLAPPE */
-.flap{
-    position:absolute;
-    top:0;
-    width:100%;
-    height:150px;
-    background:url('assets/envelope-texture.jpg') center/cover no-repeat;
-    clip-path:polygon(0 0,50% 100%,100% 0);
-    transform-origin:top;
-    transition:transform 1.5s ease;
-    z-index:4;
-}
-
-/* SIEGEL */
-.seal{
-    position:absolute;
-    width:90px;
-    height:90px;
-    background:url('assets/div.seal.png') center/cover no-repeat;
-    top:95px;
-    left:165px;
-    z-index:5;
-}
-
-/* OPEN STATE */
-.open .flap{
-    transform:rotateX(180deg);
-}
-
-.open .letter{
-    transform:translateY(-40px); /* fährt bis Hälfte der Klappe */
-}
-
-/* PASSWORT */
-.password{
-    margin-top:180px;
-    display:flex;
-    gap:15px;
-}
-
-.password input{
-    padding:12px 18px;
-    border-radius:8px;
-    border:1px solid #ccc;
-    width:200px;
-    text-align:center;
-}
-
-.password button{
-    padding:12px 20px;
-    border:none;
-    border-radius:8px;
-    background:#8b0000;
-    color:white;
-    cursor:pointer;
+.password button {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    background: #8b0000;
+    color: white;
+    cursor: pointer;
 }
 </style>
 </head>
 
 <body>
 
-<div class="wrapper" id="wrapper">
-
+<div class="wrapper">
     <div class="envelope-back"></div>
-
-    <div class="letter">
-        <p>
-        For you and me.<br>
-        For us.<br>
-        For every "I miss you"<br>
-        and "See you soon".
-        </p>
-    </div>
-
-    <div class="envelope-front"></div>
-
-    <div class="flap"></div>
-
-    <div class="seal"></div>
-
 </div>
 
 <div class="password">
-    <input type="password" id="pw" placeholder="Enter date">
-    <button onclick="openLetter()">Open</button>
+    <input type="password" placeholder="Enter date">
+    <button>Open</button>
 </div>
-
-<script>
-function openLetter(){
-    const pw=document.getElementById("pw").value;
-    if(pw==="14.04.2025"){
-        document.getElementById("wrapper").classList.add("open");
-    } else{
-        alert("Incorrect password 🤍");
-    }
-}
-</script>
 
 </body>
 </html>
