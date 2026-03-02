@@ -21,13 +21,13 @@ body {
 .wrapper {
     position: relative;
     width: 420px;
-    height: 380px; /* höher wegen Klappe */
+    height: 380px;
 }
 
 /* Umschlag-Rechteck */
 .envelope-back {
     position: absolute;
-    bottom: 0;
+    top: 150px;               /* feste Position */
     width: 100%;
     height: 230px;
     background: url('assets/envelope-texture.jpg') center/cover no-repeat;
@@ -37,7 +37,7 @@ body {
 /* Klappe */
 .flap {
     position: absolute;
-    bottom: 230px; /* exakt Höhe des Rechtecks */
+    top: 0;                   /* sitzt direkt oben */
     width: 100%;
     height: 150px;
     background: url('assets/envelope-texture.jpg') center/cover no-repeat;
@@ -75,8 +75,8 @@ body {
 <body>
 
 <div class="wrapper">
-    <div class="envelope-back"></div>
     <div class="flap"></div>
+    <div class="envelope-back"></div>
 </div>
 
 <div class="password">
