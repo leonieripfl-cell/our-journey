@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Envelope with Wax Seal - Letter Hidden Start</title>
+<title>Our Journey</title>
 
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Courier+Prime&display=swap');
@@ -17,6 +17,7 @@ body {
     justify-content: flex-start;
     padding-top: 120px;
     background: url('assets/fabric-blue.jpg') repeat;
+    transition: opacity 0.8s ease;
 }
 
 /* Wrapper mit Clipping */
@@ -106,7 +107,7 @@ body {
     gap: 15px;
 }
 
-/* Dummy-Feld fängt Autofill ab */
+/* Dummy-Feld verhindert Autofill */
 .password input.dummy {
     display: none;
 }
@@ -117,7 +118,7 @@ body {
     border: 1px solid #ccc;
     width: 200px;
     text-align: center;
-    autocomplete: new-password; /* verhindert Autofill */
+    autocomplete: new-password;
 }
 
 .password button {
@@ -154,13 +155,34 @@ body {
 </div>
 
 <div class="password">
-    <!-- Dummy-Feld -->
+    <!-- Dummy-Feld für Autofill -->
     <input type="text" class="dummy" name="fakeusernameremembered">
 
     <!-- echtes Passwortfeld -->
     <input type="password" class="real" name="password" placeholder="Enter date" autocomplete="new-password">
     <button>Open</button>
 </div>
+
+<script>
+// Richtiges Passwort
+const correctPassword = "14.04.25";
+
+document.querySelector(".password button").addEventListener("click", () => {
+    const input = document.querySelector(".password input.real").value;
+
+    if (input === correctPassword) {
+        // Sanfter Fade-Out
+        document.body.style.opacity = 0;
+
+        // Nach 0.8s weiterleiten
+        setTimeout(() => {
+            window.location.href = "map.html";
+        }, 800);
+    } else {
+        alert("Falsches Passwort. Versuch es noch einmal!");
+    }
+});
+</script>
 
 </body>
 </html>
