@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Envelope with Letter Correct Layer</title>
+<title>Envelope Letter Adjusted Flap</title>
 
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Courier+Prime&display=swap');
@@ -41,11 +41,11 @@ body {
 /* Brief */
 .letter {
     position: absolute;
-    top: 150px; /* direkt über Rückseite */
+    top: 150px; /* über Rückseite */
     width: 100%;
     height: 230px;
     background: url('assets/paper-texture.png') center/cover no-repeat;
-    z-index: 2; /* über Rückseite, unter Vorderseite */
+    z-index: 3; /* über Klappe, unter Vorderseite */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -67,16 +67,16 @@ body {
     height: 230px;
     background: url('assets/envelope-texture.jpg') center/cover no-repeat;
     clip-path: polygon(
-        0% 0%,       /* obere linke Ecke */
-        50% 115px,   /* Siegelpunkt */
-        100% 0%,     /* obere rechte Ecke */
-        100% 100%,   /* untere rechte Ecke */
-        0% 100%      /* untere linke Ecke */
+        0% 0%,       
+        50% 115px,   
+        100% 0%,     
+        100% 100%,   
+        0% 100%      
     );
-    z-index: 3; /* über Brief */
+    z-index: 4; /* oberste Ebene */
 }
 
-/* Klappe */
+/* Klappe – zwei Ebenen zurück */
 .flap {
     position: absolute;
     top: 1px;
@@ -84,7 +84,7 @@ body {
     height: 150px;
     background: url('assets/envelope-texture.jpg') center/cover no-repeat;
     clip-path: polygon(0 100%, 50% 0%, 100% 100%);
-    z-index: 4; /* ganz oben */
+    z-index: 2; /* unter Brief, hinter Vorderseite */
 }
 
 /* Passwortfeld */
@@ -111,10 +111,10 @@ body {
     cursor: pointer;
 }
 
-/* Brief Animation */
+/* Animation */
 @keyframes riseLetter {
     0% { transform: translateY(0); }
-    100% { transform: translateY(-115px); } /* fährt nach oben, bleibt unter Vorderseite */
+    100% { transform: translateY(-115px); }
 }
 </style>
 </head>
@@ -122,11 +122,11 @@ body {
 
 <div class="wrapper">
     <div class="envelope-back"></div>
+    <div class="flap"></div>
     <div class="letter">
         For you and me. For us. For every "i miss you" and "see you soon".
     </div>
     <div class="envelope-front"></div>
-    <div class="flap"></div>
 </div>
 
 <div class="password">
