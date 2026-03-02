@@ -123,7 +123,8 @@ body, html {
     position: absolute;
     width: 40px;
     height: 40px;
-    background: url('assets/paperplane.png') no-repeat center/contain;
+    background-size: contain;
+    background-repeat: no-repeat;
     z-index: 999;
     pointer-events: none;
 }
@@ -182,21 +183,9 @@ L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
 }).addTo(map);
 
 // Icons
-const viennaIcon = L.icon({
-    iconUrl:'assets/house.vienna.png',
-    iconSize:[40,40],
-    iconAnchor:[20,40]
-});
-const edinburghIcon = L.icon({
-    iconUrl:'assets/house.edinburgh.png',
-    iconSize:[40,40],
-    iconAnchor:[20,40]
-});
-const pinIcon = L.icon({
-    iconUrl:'assets/pin.on.map.png',
-    iconSize:[35,35],
-    iconAnchor:[17,35]
-});
+const viennaIcon = L.icon({iconUrl:'assets/house.vienna.png', iconSize:[40,40], iconAnchor:[20,40]});
+const edinburghIcon = L.icon({iconUrl:'assets/house.edinburgh.png', iconSize:[40,40], iconAnchor:[20,40]});
+const pinIcon = L.icon({iconUrl:'assets/pin.on.map.png', iconSize:[35,35], iconAnchor:[17,35]});
 
 // Markers
 const edinburgh = L.marker([55.9533, -3.1883], {icon: edinburghIcon}).addTo(map).bindPopup('<b>Edinburgh</b>');
@@ -213,7 +202,7 @@ let paperPlanes = JSON.parse(localStorage.getItem('paperPlanes') || '[]');
 const planeList = document.getElementById('planeList');
 function updatePlaneList() {
     planeList.innerHTML = '';
-    paperPlanes.forEach((msg, i) => {
+    paperPlanes.forEach(msg => {
         const li = document.createElement('li');
         li.textContent = msg;
         planeList.appendChild(li);
@@ -231,30 +220,64 @@ document.getElementById('planeIcon').addEventListener('click', () => {
     letterPanel.style.display = 'none';
     addPinForm.style.display = 'none';
 });
-
 document.getElementById('penIcon').addEventListener('click', () => {
     letterPanel.style.display = letterPanel.style.display === 'none' ? 'block' : 'none';
     planePanel.style.display = 'none';
     addPinForm.style.display = 'none';
 });
-
 document.getElementById('pinIcon').addEventListener('click', () => {
     addPinForm.style.display = addPinForm.style.display === 'none' ? 'block' : 'none';
     planePanel.style.display = 'none';
     letterPanel.style.display = 'none';
 });
 
-// Send letter (with animated paperplane placeholder)
+// Send letter with directional paperplane animation
 document.getElementById('sendLetter').addEventListener('click', () => {
     const msg = document.getElementById('letterText').value;
-    if(msg) {
-        alert("Letter sent! (animation placeholder)");
-        paperPlanes.push(msg);
-        localStorage.setItem('paperPlanes', JSON.stringify(paperPlanes));
-        updatePlaneList();
-        document.getElementById('letterText').value = '';
-        letterPanel.style.display = 'none';
+    if(!msg) { alert("Please write a letter!"); return; }
+
+    // Prompt for sender
+    let sender = prompt("Who are you? (Saul / Leonie)");
+    sender = sender?.trim().toLowerCase();
+    if(sender !== "saul" && sender !== "leonie") { alert("Invalid sender!"); return; }
+
+    const planeImg = sender === "saul" ? "assets/paperplane.to.vienna.png" : "assets/paperplane.to.edinburgh.png";
+    const plane = document.createElement('div');
+    plane.classList.add('plane-animation');
+    plane.style.backgroundImage = `url('${planeImg}')`;
+    document.body.appendChild(plane);
+
+    const start = sender === "saul" ? vienna.getLatLng() : edinburgh.getLatLng();
+    const end = sender === "saul" ? edinburgh.getLatLng() : vienna.getLatLng();
+    const startPoint = map.latLngToContainerPoint(start);
+    const endPoint = map.latLngToContainerPoint(end);
+    plane.style.left = `${startPoint.x}px`;
+    plane.style.top = `${startPoint.y}px`;
+
+    const duration = 2000;
+    let startTime = null;
+
+    function animatePlane(timestamp) {
+        if(!startTime) startTime = timestamp;
+        const progress = (timestamp - startTime)/duration;
+        if(progress >= 1) {
+            plane.remove();
+            paperPlanes.push(msg);
+            localStorage.setItem('paperPlanes', JSON.stringify(paperPlanes));
+            updatePlaneList();
+            alert("Letter sent!");
+            return;
+        }
+        const x = startPoint.x + (endPoint.x - startPoint.x)*progress;
+        const y = startPoint.y + (endPoint.y - startPoint.y)*progress;
+        plane.style.left = `${x}px`;
+        plane.style.top = `${y}px`;
+        requestAnimationFrame(animatePlane);
     }
+    requestAnimationFrame(animatePlane);
+
+    document.getElementById('letterText').value = '';
+    letterPanel.style.display = 'none';
 });
 
 // Add Pin
@@ -273,7 +296,7 @@ document.getElementById('savePin').addEventListener('click', () => {
     addPinForm.style.display = 'none';
 });
 
-// Days together bottom left
+// Days together
 function updateDaysTogether() {
     const startDate = new Date('2025-04-14');
     const today = new Date();
@@ -283,7 +306,6 @@ function updateDaysTogether() {
 }
 updateDaysTogether();
 setInterval(updateDaysTogether, 60*1000);
-
 </script>
 </body>
 </html>
