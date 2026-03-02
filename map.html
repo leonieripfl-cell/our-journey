@@ -1,4 +1,4 @@
-  <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -20,7 +20,7 @@ body, html {
     height: 100vh;
 }
 
-/* Days together */
+/* Days counter */
 #daysTogether {
     position: absolute;
     bottom: 20px;
@@ -29,16 +29,15 @@ body, html {
     background: rgba(255,255,255,0.9);
     padding: 10px 15px;
     border-radius: 8px;
-    font-size: 16px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.25);
 }
 
-/* Icon bar */
+/* Top right icons */
 #iconBar {
     position: absolute;
     top: 20px;
     right: 20px;
-    z-index: 1000;
+    z-index: 2000;
     display: flex;
     gap: 10px;
 }
@@ -71,23 +70,19 @@ body, html {
     position: absolute;
     top: 85px;
     right: 20px;
-    z-index: 1000;
+    z-index: 2000;
     background: white;
     padding: 15px;
     border-radius: 10px;
     box-shadow: 0 3px 8px rgba(0,0,0,0.3);
     display: none;
     width: 260px;
-    max-height: 300px;
-    overflow-y: auto;
 }
 
 .panel textarea {
     width: 100%;
     margin-bottom: 10px;
     padding: 6px;
-    border-radius: 6px;
-    border: 1px solid #ccc;
 }
 
 .panel button {
@@ -102,12 +97,12 @@ body, html {
 
 .plane-animation {
     position: absolute;
-    width: 42px;
-    height: 42px;
+    width: 44px;
+    height: 44px;
     background-size: contain;
     background-repeat: no-repeat;
     pointer-events: none;
-    z-index: 999;
+    z-index: 3000;
 }
 </style>
 </head>
@@ -153,7 +148,7 @@ L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
     maxZoom: 19
 }).addTo(map);
 
-// Icons
+// Custom icons
 const viennaIcon = L.icon({
     iconUrl: 'assets/house.vienna.png',
     iconSize: [42, 42],
@@ -176,7 +171,7 @@ const travelPinIcon = L.icon({
 const vienna = L.marker([48.2082, 16.3738], {icon: viennaIcon}).addTo(map).bindPopup("Vienna");
 const edinburgh = L.marker([55.9533, -3.1883], {icon: edinburghIcon}).addTo(map).bindPopup("Edinburgh");
 
-// Budapest pin (restored)
+// Budapest pin restored
 L.marker([47.4979, 19.0402], {icon: travelPinIcon})
     .addTo(map)
     .bindPopup("Budapest");
@@ -185,42 +180,140 @@ L.marker([47.4979, 19.0402], {icon: travelPinIcon})
 
 let pinMode = false;
 
-pinIcon.onclick = () => {
+document.getElementById("pinIcon").addEventListener("click", function() {
     pinMode = !pinMode;
-    pinIcon.style.background = pinMode ? "#ffe6e6" : "white";
-};
+    this.style.background = pinMode ? "#ffe6e6" : "white";
+});
 
 map.on("click", function(e) {
     if (!pinMode) return;
 
-    const newPin = L.marker(e.latlng, {icon: travelPinIcon})
+    L.marker(e.latlng, {icon: travelPinIcon})
         .addTo(map)
         .bindPopup("New memory spot 💕")
         .openPopup();
 
     pinMode = false;
-    pinIcon.style.background = "white";
+    document.getElementById("pinIcon").style.background = "white";
 });
 
 // ================= PANELS =================
 
-planeIcon.onclick = () => {
+document.getElementById("planeIcon").onclick = () => {
     planePanel.style.display = planePanel.style.display === "block" ? "none" : "block";
     letterPanel.style.display = "none";
 };
 
-penIcon.onclick = () => {
+document.getElementById("penIcon").onclick = () => {
     letterPanel.style.display = letterPanel.style.display === "block" ? "none" : "block";
     planePanel.style.display = "none";
 };
 
-// ================= DAYS TOGETHER =================
+// ================= PAPERPLANE SEND =================
+
+let paperPlanes = [];
+
+document.getElementById("sendLetter").addEventListener("click", () => {
+
+    const msg = document.getElementById("letterText").value;
+    if(!msg) return alert("Please write a letter!");
+
+    let sender = prompt("Who are you? (Saul / Leonie)");
+    if(!sender) return;
+    sender = sender.trim().toLowerCase();
+
+    if(sender !== "saul" && sender !== "leonie") {
+        alert("Invalid sender!");
+        return;
+    }
+
+    const start = sender === "saul" ? edinburgh.getLatLng() : vienna.getLatLng();
+    const end = sender === "saul" ? vienna.getLatLng() : edinburgh.getLatLng();
+    const planeImg = sender === "saul"
+        ? "assets/paperplane.to.vienna.png"
+        : "assets/paperplane.to.edinburgh.png";
+
+    animatePlane(start, end, planeImg);
+
+    paperPlanes.push(msg);
+    document.getElementById("letterText").value = "";
+    letterPanel.style.display = "none";
+});
+
+function animatePlane(startLatLng, endLatLng, imagePath) {
+
+    const start = map.latLngToContainerPoint(startLatLng);
+    const end = map.latLngToContainerPoint(endLatLng);
+
+    const plane = document.createElement("div");
+    plane.className = "plane-animation";
+    plane.style.backgroundImage = `url('${imagePath}')`;
+    document.body.appendChild(plane);
+
+    const canvas = document.createElement("canvas");
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    canvas.style.position = "absolute";
+    canvas.style.top = 0;
+    canvas.style.left = 0;
+    canvas.style.pointerEvents = "none";
+    canvas.style.zIndex = 2000;
+    document.body.appendChild(canvas);
+
+    const ctx = canvas.getContext("2d");
+    ctx.setLineDash([6,6]);
+    ctx.lineWidth = 2;
+
+    const duration = 4500;
+    let startTime = null;
+
+    function animate(timestamp) {
+        if(!startTime) startTime = timestamp;
+        const progress = Math.min((timestamp - startTime)/duration, 1);
+
+        const x = start.x + (end.x - start.x)*progress;
+        const yLinear = start.y + (end.y - start.y)*progress;
+        const curveHeight = 140;
+        const y = yLinear - Math.sin(progress*Math.PI)*curveHeight;
+
+        plane.style.left = x + "px";
+        plane.style.top = y + "px";
+
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+        ctx.beginPath();
+
+        const trailStart = Math.max(0, progress - 0.25);
+
+        for(let t = trailStart; t <= progress; t += 0.01){
+            const tx = start.x + (end.x - start.x)*t;
+            const tyLinear = start.y + (end.y - start.y)*t;
+            const ty = tyLinear - Math.sin(t*Math.PI)*curveHeight;
+
+            if(t === trailStart) ctx.moveTo(tx,ty);
+            else ctx.lineTo(tx,ty);
+        }
+
+        ctx.strokeStyle = `rgba(0,0,0,${1-progress})`;
+        ctx.stroke();
+
+        if(progress < 1){
+            requestAnimationFrame(animate);
+        } else {
+            plane.remove();
+            canvas.remove();
+        }
+    }
+
+    requestAnimationFrame(animate);
+}
+
+// ================= DAYS COUNTER =================
 
 function updateDaysTogether() {
     const startDate = new Date("2025-04-14");
     const today = new Date();
     const diff = Math.floor((today - startDate)/(1000*60*60*24));
-    daysCount.textContent = diff;
+    document.getElementById("daysCount").textContent = diff;
 }
 updateDaysTogether();
 setInterval(updateDaysTogether, 60000);
