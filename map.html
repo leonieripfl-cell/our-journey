@@ -234,12 +234,10 @@ document.getElementById('pinIcon').addEventListener('click', () => {
 document.getElementById('sendLetter').addEventListener('click', () => {
     const msg = document.getElementById('letterText').value;
     if(msg) {
-        animatePlane(vienna.getLatLng(), edinburgh.getLatLng(), () => {
-            paperPlanes.push(msg);
-            localStorage.setItem('paperPlanes', JSON.stringify(paperPlanes));
-            updatePlaneList();
-            alert("Letter sent!");
-        });
+        alert("Letter sent! (animation placeholder)"); // Paperplane animation optional
+        paperPlanes.push(msg);
+        localStorage.setItem('paperPlanes', JSON.stringify(paperPlanes));
+        updatePlaneList();
         document.getElementById('letterText').value = '';
         letterPanel.style.display = 'none';
     }
@@ -271,38 +269,6 @@ function updateDaysTogether() {
 }
 updateDaysTogether();
 setInterval(updateDaysTogether, 60*1000);
-
-// Animate paper plane
-function animatePlane(startLatLng, endLatLng, callback) {
-    const planeEl = document.createElement('div');
-    planeEl.className = 'plane-animation';
-    document.body.appendChild(planeEl);
-
-    const startPoint = map.latLngToContainerPoint(startLatLng);
-    const endPoint = map.latLngToContainerPoint(endLatLng);
-
-    planeEl.style.left = startPoint.x + 'px';
-    planeEl.style.top = startPoint.y + 'px';
-
-    const duration = 2000; // 2 seconds
-    const startTime = performance.now();
-
-    function step(now) {
-        const progress = Math.min((now - startTime)/duration, 1);
-        const x = startPoint.x + (endPoint.x - startPoint.x)*progress;
-        const y = startPoint.y + (endPoint.y - startPoint.y)*progress;
-        planeEl.style.left = x + 'px';
-        planeEl.style.top = y + 'px';
-        if(progress < 1) {
-            requestAnimationFrame(step);
-        } else {
-            document.body.removeChild(planeEl);
-            if(callback) callback();
-        }
-    }
-
-    requestAnimationFrame(step);
-}
 </script>
 </body>
 </html>
