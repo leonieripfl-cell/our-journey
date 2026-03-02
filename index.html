@@ -112,6 +112,8 @@ body {
     border: 1px solid #ccc;
     width: 200px;
     text-align: center;
+    value: "";          /* leer beim Start */
+    autocomplete: off;  /* kein automatisches Ausfüllen */
 }
 
 .password button {
@@ -148,7 +150,7 @@ body {
 </div>
 
 <div class="password">
-    <input type="password" placeholder="Enter date">
+    <input type="password" placeholder="Enter date" value="" autocomplete="off">
     <button>Open</button>
 </div>
 
