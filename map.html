@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Our Journey</title>
+<title>Our Journey Map</title>
 
 <!-- Leaflet CSS -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
@@ -26,94 +26,189 @@ body, html {
     margin: 5px;
 }
 
-/* Papierflieger Button */
-#paperPlaneButton {
+/* Icon-Leiste oben rechts */
+#iconBar {
     position: absolute;
     top: 20px;
     right: 20px;
     z-index: 1000;
-    padding: 12px 18px;
+    display: flex;
+    gap: 10px;
+}
+
+.icon-button {
+    width: 50px;
+    height: 50px;
+    border-radius: 8px;
+    background: white;
+    border: 1px solid #ccc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    font-size: 24px;
+}
+
+/* Panels */
+.panel {
+    position: absolute;
+    top: 80px;
+    right: 20px;
+    z-index: 1000;
+    background: white;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    display: none;
+    width: 250px;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.panel h3 {
+    margin-top: 0;
+}
+
+/* Formularfelder */
+.panel input, .panel textarea {
+    width: 100%;
+    margin-bottom: 8px;
+    padding: 6px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
+.panel button {
+    width: 100%;
+    padding: 8px;
     background: #8b0000;
     color: white;
     border: none;
-    border-radius: 8px;
+    border-radius: 4px;
     cursor: pointer;
 }
 </style>
 </head>
 <body>
 
-<button id="paperPlaneButton">Papierflieger senden</button>
+<div id="iconBar">
+    <div id="planeIcon" class="icon-button" title="Papierflieger">&#9993;</div>
+    <div id="penIcon" class="icon-button" title="Brief verfassen">&#9998;</div>
+    <div id="pinIcon" class="icon-button" title="Pin hinzufügen">&#128205;</div>
+</div>
+
+<!-- Panels -->
+<div id="planePanel" class="panel">
+    <h3>Gesendete Papierflieger</h3>
+    <ul id="planeList"></ul>
+</div>
+
+<div id="letterPanel" class="panel">
+    <h3>Neuen Brief verfassen</h3>
+    <textarea id="letterText" rows="5" placeholder="Schreibe hier deinen Brief..."></textarea>
+    <button id="sendLetter">Senden</button>
+</div>
+
+<div id="addPinForm" class="panel">
+    <h3>Neuen Pin hinzufügen</h3>
+    <input type="text" id="pinName" placeholder="Name des Ortes">
+    <input type="text" id="pinImage" placeholder="Bild-URL">
+    <input type="text" id="pinText" placeholder="Text">
+    <button id="savePin">Pin hinzufügen</button>
+</div>
+
 <div id="map"></div>
 
 <!-- Leaflet JS -->
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
 <script>
-// Leaflet Karte initialisieren
-const map = L.map('map').setView([48.2082, 16.3738], 4); // Start auf Wien/Europa
-
-// OpenStreetMap Layer
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '© OpenStreetMap contributors'
+// Karte initialisieren
+const map = L.map('map').setView([48.2082, 16.3738], 4);
+L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+    attribution: '&copy; OSM &copy; CARTO',
+    subdomains: 'abcd',
+    maxZoom: 19
 }).addTo(map);
 
-// Marker Icons
-const houseIcon = L.icon({
-    iconUrl: 'assets/house.png',
-    iconSize: [40, 40],
-    iconAnchor: [20, 40],
-});
+// Icons
+const houseIcon = L.icon({iconUrl:'assets/house.png', iconSize:[40,40], iconAnchor:[20,40]});
+const planeIcon = L.icon({iconUrl:'assets/paperplane.png', iconSize:[40,40], iconAnchor:[20,20]});
 
-const planeIcon = L.icon({
-    iconUrl: 'assets/paperplane.png',
-    iconSize: [40, 40],
-    iconAnchor: [20, 20],
-});
-
-// Hauptmarker: Edinburgh & Wien
+// Marker
 const edinburgh = L.marker([55.9533, -3.1883], {icon: houseIcon}).addTo(map).bindPopup('<b>Edinburgh</b>');
 const wien = L.marker([48.2082, 16.3738], {icon: houseIcon}).addTo(map).bindPopup('<b>Wien</b>');
 
-// Beispiel-Reisepins
-const stirling = L.marker([56.1165, -3.9369]).addTo(map).bindPopup('<div class="popup-album"><b>Stirling</b><br><img src="assets/stirling1.jpg"><img src="assets/stirling2.jpg"></div>');
-const budapest = L.marker([47.4979, 19.0402]).addTo(map).bindPopup('<div class="popup-album"><b>Budapest</b><br><img src="assets/budapest1.jpg"><img src="assets/budapest2.jpg"></div>');
+// Beispielpins
+const stirling = L.marker([56.1165, -3.9369]).addTo(map)
+.bindPopup('<div class="popup-album"><b>Stirling</b><br><img src="assets/stirling1.jpg"><img src="assets/stirling2.jpg"></div>');
+const budapest = L.marker([47.4979, 19.0402]).addTo(map)
+.bindPopup('<div class="popup-album"><b>Budapest</b><br><img src="assets/budapest1.jpg"><img src="assets/budapest2.jpg"></div>');
 
-// Papierflieger Funktion
-const paperPlanes = []; // lokal gespeicherte Nachrichten
+// Papierflieger-Liste
+let paperPlanes = JSON.parse(localStorage.getItem('paperPlanes') || '[]');
+const planeList = document.getElementById('planeList');
+function updatePlaneList() {
+    planeList.innerHTML = '';
+    paperPlanes.forEach((msg, i) => {
+        const li = document.createElement('li');
+        li.textContent = msg;
+        planeList.appendChild(li);
+    });
+}
+updatePlaneList();
 
-document.getElementById('paperPlaneButton').addEventListener('click', () => {
-    const msg = prompt("Schreibe eine Nachricht für den Papierflieger:");
+// Icon-Buttons
+const planePanel = document.getElementById('planePanel');
+const letterPanel = document.getElementById('letterPanel');
+const addPinForm = document.getElementById('addPinForm');
+
+document.getElementById('planeIcon').addEventListener('click', () => {
+    planePanel.style.display = planePanel.style.display === 'none' ? 'block' : 'none';
+    letterPanel.style.display = 'none';
+    addPinForm.style.display = 'none';
+});
+
+document.getElementById('penIcon').addEventListener('click', () => {
+    letterPanel.style.display = letterPanel.style.display === 'none' ? 'block' : 'none';
+    planePanel.style.display = 'none';
+    addPinForm.style.display = 'none';
+});
+
+document.getElementById('pinIcon').addEventListener('click', () => {
+    addPinForm.style.display = addPinForm.style.display === 'none' ? 'block' : 'none';
+    planePanel.style.display = 'none';
+    letterPanel.style.display = 'none';
+});
+
+// Brief senden (Papierflieger)
+document.getElementById('sendLetter').addEventListener('click', () => {
+    const msg = document.getElementById('letterText').value;
     if(msg) {
-        // Plane speichern
         paperPlanes.push(msg);
         localStorage.setItem('paperPlanes', JSON.stringify(paperPlanes));
-
-        // Animation: einfacher Marker für Papierflieger zwischen Wien ↔ Edinburgh
-        const start = wien.getLatLng();
-        const end = edinburgh.getLatLng();
-        const planeMarker = L.marker(start, {icon: planeIcon}).addTo(map);
-
-        let step = 0;
-        const steps = 100;
-        const interval = setInterval(() => {
-            const lat = start.lat + (end.lat - start.lat) * (step/steps);
-            const lng = start.lng + (end.lng - start.lng) * (step/steps);
-            planeMarker.setLatLng([lat, lng]);
-            step++;
-            if(step > steps) {
-                clearInterval(interval);
-                planeMarker.remove();
-                alert("Papierflieger angekommen! Nachricht gespeichert.");
-            }
-        }, 15);
+        updatePlaneList();
+        alert("Brief gesendet!");
+        document.getElementById('letterText').value = '';
+        letterPanel.style.display = 'none';
     }
 });
 
-// Gespeicherte Papierflieger beim Laden abrufen
-const savedPlanes = JSON.parse(localStorage.getItem('paperPlanes') || '[]');
-console.log("Gespeicherte Papierflieger:", savedPlanes);
+// Pin hinzufügen
+document.getElementById('savePin').addEventListener('click', () => {
+    const name = document.getElementById('pinName').value;
+    const img = document.getElementById('pinImage').value;
+    const text = document.getElementById('pinText').value;
+    if(!name) { alert("Bitte Namen eingeben!"); return; }
 
+    L.marker(map.getCenter()).addTo(map)
+        .bindPopup(`<div class="popup-album"><b>${name}</b><br>${text}<br><img src="${img}"></div>`);
+
+    document.getElementById('pinName').value = '';
+    document.getElementById('pinImage').value = '';
+    document.getElementById('pinText').value = '';
+    addPinForm.style.display = 'none';
+});
 </script>
 
 </body>
