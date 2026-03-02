@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Our Journey Map</title>
+<title>Our Journey</title>
 
 <!-- Leaflet CSS -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
@@ -118,7 +118,7 @@ body, html {
     cursor: pointer;
 }
 
-/* Paper plane animation placeholder */
+/* Paper plane animation */
 .plane-animation {
     position: absolute;
     width: 40px;
@@ -182,34 +182,17 @@ L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
 }).addTo(map);
 
 // Icons
-const viennaIcon = L.icon({
-    iconUrl: 'assets/house.vienna.png',
-    iconSize: [40,40],
-    iconAnchor: [20,40]
-});
+const houseIcon = L.icon({iconUrl:'assets/house.png', iconSize:[40,40], iconAnchor:[20,40]});
 
-const edinburghIcon = L.icon({
-    iconUrl: 'assets/house.edinburgh.png',
-    iconSize: [40,40],
-    iconAnchor: [20,40]
-});
+// Markers
+const edinburgh = L.marker([55.9533, -3.1883], {icon: houseIcon}).addTo(map).bindPopup('<b>Edinburgh</b>');
+const vienna = L.marker([48.2082, 16.3738], {icon: houseIcon}).addTo(map).bindPopup('<b>Vienna</b>');
 
-const pinIcon = L.icon({
-    iconUrl: 'assets/pin.on.map.png',
-    iconSize: [35,35],
-    iconAnchor: [17,35]
-});
-
-// Marker mit Icons
-const edinburgh = L.marker([55.9533, -3.1883], {icon: edinburghIcon}).addTo(map).bindPopup('<b>Edinburgh</b>');
-const vienna = L.marker([48.2082, 16.3738], {icon: viennaIcon}).addTo(map).bindPopup('<b>Vienna</b>');
-
-// Beispielpins
-const stirling = L.marker([56.1165, -3.9369], {icon: pinIcon}).addTo(map)
-    .bindPopup('<div class="popup-album"><b>Stirling</b><br><img src="assets/stirling1.jpg"><img src="assets/stirling2.jpg"></div>');
-
-const budapest = L.marker([47.4979, 19.0402], {icon: pinIcon}).addTo(map)
-    .bindPopup('<div class="popup-album"><b>Budapest</b><br><img src="assets/budapest1.jpg"><img src="assets/budapest2.jpg"></div>');
+// Example pins
+const stirling = L.marker([56.1165, -3.9369]).addTo(map)
+.bindPopup('<div class="popup-album"><b>Stirling</b><br><img src="assets/stirling1.jpg"><img src="assets/stirling2.jpg"></div>');
+const budapest = L.marker([47.4979, 19.0402]).addTo(map)
+.bindPopup('<div class="popup-album"><b>Budapest</b><br><img src="assets/budapest1.jpg"><img src="assets/budapest2.jpg"></div>');
 
 // Paperplanes list
 let paperPlanes = JSON.parse(localStorage.getItem('paperPlanes') || '[]');
@@ -247,11 +230,11 @@ document.getElementById('pinIcon').addEventListener('click', () => {
     letterPanel.style.display = 'none';
 });
 
-// Send letter placeholder
+// Send letter (with animated paperplane)
 document.getElementById('sendLetter').addEventListener('click', () => {
     const msg = document.getElementById('letterText').value;
     if(msg) {
-        alert("Letter sent! (animation placeholder)");
+        alert("Letter sent! (animation placeholder)"); // Paperplane animation optional
         paperPlanes.push(msg);
         localStorage.setItem('paperPlanes', JSON.stringify(paperPlanes));
         updatePlaneList();
@@ -267,7 +250,7 @@ document.getElementById('savePin').addEventListener('click', () => {
     const text = document.getElementById('pinText').value;
     if(!name) { alert("Please enter a name!"); return; }
 
-    L.marker(map.getCenter(), {icon: pinIcon}).addTo(map)
+    L.marker(map.getCenter()).addTo(map)
         .bindPopup(`<div class="popup-album"><b>${name}</b><br>${text}<br><img src="${img}"></div>`);
 
     document.getElementById('pinName').value = '';
@@ -286,7 +269,6 @@ function updateDaysTogether() {
 }
 updateDaysTogether();
 setInterval(updateDaysTogether, 60*1000);
-
 </script>
 </body>
 </html>
