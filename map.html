@@ -1,110 +1,120 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Our Journey</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<!-- Leaflet CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
 
 <style>
-body { margin:0; padding:0; font-family:Georgia, serif; background:#f4f1ea; }
-#map { width:100vw; height:100vh; }
-
-.timer {
-    position:absolute; top:10px; right:20px;
-    background: rgba(255,255,255,0.8); padding:10px; border-radius:8px;
-    font-size:18px; z-index:1000;
+body, html {
+    margin: 0;
+    height: 100%;
+    font-family: 'Courier Prime', monospace;
 }
 
-/* Papierflieger */
-.plane { width:40px; height:40px; position:absolute; z-index:1000; background:url('https://i.ibb.co/2h6Kp3D/white-paper-plane.png') no-repeat center/contain; display:none; }
-
-/* Pinnnadeln & Scrapbook */
-.popup-photo { width:200px; position: relative; }
-.popup-photo img {
-    width:100%; transform: rotate(-5deg); border:2px solid #fff; box-shadow:0 2px 6px rgba(0,0,0,0.3); position:relative;
+#map {
+    width: 100%;
+    height: 100vh;
 }
-.popup-photo .tape { position:absolute; width:40px; height:15px; background:#ffe4b5; top:-5px; left:30px; transform:rotate(-15deg); }
 
-/* Tag/Nacht Modus */
-body.night { background:#2c2c2c; }
-.leaflet-tile { filter: brightness(0.9) saturate(0.9); }
+/* Popup-Fotoalbum */
+.popup-album img {
+    width: 100px;
+    margin: 5px;
+}
+
+/* Papierflieger Button */
+#paperPlaneButton {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    padding: 12px 18px;
+    background: #8b0000;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
 </style>
 </head>
 <body>
 
-<div class="timer" id="timer">Loading timer...</div>
+<button id="paperPlaneButton">Papierflieger senden</button>
 <div id="map"></div>
-<div class="plane" id="plane"></div>
 
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
 <script>
-// --- Karte ---
-var map = L.map('map', {zoomControl:true}).setView([50,10],4);
-L.tileLayer('https://stamen-tiles.a.ssl.fastly.net/terrain/{z}/{x}/{y}.jpg',{
-    attribution:'Map tiles by Stamen Design', minZoom:2, maxZoom:18
+// Leaflet Karte initialisieren
+const map = L.map('map').setView([48.2082, 16.3738], 4); // Start auf Wien/Europa
+
+// OpenStreetMap Layer
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap contributors'
 }).addTo(map);
 
-// --- Beziehungstimer ---
-function updateTimer(){
-    var start = new Date("2023-08-01T00:00:00");
-    var now = new Date();
-    var diff = now - start;
-    var days = Math.floor(diff/(1000*60*60*24));
-    document.getElementById('timer').innerText = days + " days together ❤️";
-}
-setInterval(updateTimer,1000);
-updateTimer();
+// Marker Icons
+const houseIcon = L.icon({
+    iconUrl: 'assets/house.png',
+    iconSize: [40, 40],
+    iconAnchor: [20, 40],
+});
 
-// --- Locations Array (erweiterbar) ---
-const locations = [
-    { name:"Wien", coords:[48.2082,16.3738], icon:"house", popupContent:"🏠 Home sweet home" },
-    { name:"Edinburgh", coords:[55.9533,-3.1883], icon:"house", popupContent:"🏠 Home sweet home" },
-    { name:"Berlin", coords:[52.52,13.405], icon:"pin", popupContent:`<div class="popup-photo"><div class="tape"></div><img src="https://i.ibb.co/LkKXr7H/berlin-photo.jpg" alt="Photo"></div>` }
-];
+const planeIcon = L.icon({
+    iconUrl: 'assets/paperplane.png',
+    iconSize: [40, 40],
+    iconAnchor: [20, 20],
+});
 
-// --- Marker generieren ---
-locations.forEach(loc=>{
-    let icon;
-    if(loc.icon==="house") icon = L.icon({iconUrl:'https://i.ibb.co/Tmbj8x9/house-icon.png', iconSize:[40,40]});
-    else icon = L.icon({iconUrl:'https://i.ibb.co/5n0tLhb/red-pin.png', iconSize:[30,40]});
+// Hauptmarker: Edinburgh & Wien
+const edinburgh = L.marker([55.9533, -3.1883], {icon: houseIcon}).addTo(map).bindPopup('<b>Edinburgh</b>');
+const wien = L.marker([48.2082, 16.3738], {icon: houseIcon}).addTo(map).bindPopup('<b>Wien</b>');
 
-    const marker = L.marker(loc.coords, {icon:icon}).addTo(map);
-    if(loc.popupContent) marker.bindPopup(loc.popupContent);
+// Beispiel-Reisepins
+const stirling = L.marker([56.1165, -3.9369]).addTo(map).bindPopup('<div class="popup-album"><b>Stirling</b><br><img src="assets/stirling1.jpg"><img src="assets/stirling2.jpg"></div>');
+const budapest = L.marker([47.4979, 19.0402]).addTo(map).bindPopup('<div class="popup-album"><b>Budapest</b><br><img src="assets/budapest1.jpg"><img src="assets/budapest2.jpg"></div>');
 
-    // Papierflieger bei Haus-Klick
-    if(loc.icon==="house"){
-        marker.on('click', ()=>{
-            const target = locations.find(l=>l.icon==="house" && l.name!==loc.name);
-            if(target) flyPlane(loc.coords, target.coords);
-        });
+// Papierflieger Funktion
+const paperPlanes = []; // lokal gespeicherte Nachrichten
+
+document.getElementById('paperPlaneButton').addEventListener('click', () => {
+    const msg = prompt("Schreibe eine Nachricht für den Papierflieger:");
+    if(msg) {
+        // Plane speichern
+        paperPlanes.push(msg);
+        localStorage.setItem('paperPlanes', JSON.stringify(paperPlanes));
+
+        // Animation: einfacher Marker für Papierflieger zwischen Wien ↔ Edinburgh
+        const start = wien.getLatLng();
+        const end = edinburgh.getLatLng();
+        const planeMarker = L.marker(start, {icon: planeIcon}).addTo(map);
+
+        let step = 0;
+        const steps = 100;
+        const interval = setInterval(() => {
+            const lat = start.lat + (end.lat - start.lat) * (step/steps);
+            const lng = start.lng + (end.lng - start.lng) * (step/steps);
+            planeMarker.setLatLng([lat, lng]);
+            step++;
+            if(step > steps) {
+                clearInterval(interval);
+                planeMarker.remove();
+                alert("Papierflieger angekommen! Nachricht gespeichert.");
+            }
+        }, 15);
     }
 });
 
-// --- Papierflieger ---
-function flyPlane(fromLatLng, toLatLng){
-    const plane = document.getElementById('plane');
-    const fromPoint = map.latLngToContainerPoint(fromLatLng);
-    const toPoint = map.latLngToContainerPoint(toLatLng);
-    plane.style.display='block'; plane.style.left=fromPoint.x+'px'; plane.style.top=fromPoint.y+'px';
-    let t=0; const duration=5000;
-    function animate(){
-        t+=20; const progress=t/duration;
-        if(progress>1){ plane.style.display='none'; return; }
-        const x = fromPoint.x + (toPoint.x-fromPoint.x)*progress;
-        const y = fromPoint.y + (toPoint.y-fromPoint.y)*progress + Math.sin(progress*Math.PI)*-50;
-        plane.style.left=x+'px'; plane.style.top=y+'px';
-        requestAnimationFrame(animate);
-    }
-    animate();
-}
-
-// --- Tag/Nacht Modus ---
-var hour = new Date().getHours();
-if(hour>=20 || hour<6) document.body.classList.add('night');
+// Gespeicherte Papierflieger beim Laden abrufen
+const savedPlanes = JSON.parse(localStorage.getItem('paperPlanes') || '[]');
+console.log("Gespeicherte Papierflieger:", savedPlanes);
 
 </script>
+
 </body>
 </html>
