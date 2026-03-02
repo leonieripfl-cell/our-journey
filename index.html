@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Envelope with Letter</title>
+<title>Envelope with Letter Corrected</title>
 
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Courier+Prime&display=swap');
@@ -41,11 +41,11 @@ body {
 /* Brief */
 .letter {
     position: absolute;
-    top: 150px + 230px; /* Start hinter Rückseite */
+    top: 150px; /* direkt über Rückseite */
     width: 100%;
     height: 230px;
     background: url('assets/paper-texture.png') center/cover no-repeat;
-    z-index: 2;
+    z-index: 2; /* zwischen Rückseite und Vorderseite */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -68,9 +68,10 @@ body {
     width: 100%;
     height: 230px;
     background: url('assets/envelope-texture.jpg') center/cover no-repeat;
+
     clip-path: polygon(
         0% 0%,       /* obere linke Ecke */
-        50% 115px,   /* Siegelpunkt in Mitte des Rechtecks */
+        50% 115px,   /* Siegelpunkt in der Mitte des Rechtecks */
         100% 0%,     /* obere rechte Ecke */
         100% 100%,   /* untere rechte Ecke */
         0% 100%      /* untere linke Ecke */
@@ -124,11 +125,11 @@ body {
 <body>
 
 <div class="wrapper">
-    <div class="flap"></div>
-    <div class="envelope-front"></div>
     <div class="letter">
         For you and me. For us. For every "i miss you" and "see you soon".
     </div>
+    <div class="flap"></div>
+    <div class="envelope-front"></div>
     <div class="envelope-back"></div>
 </div>
 
