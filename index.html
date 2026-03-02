@@ -3,9 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Envelope Step 3 Corrected Seal</title>
+<title>Envelope with Letter</title>
 
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Courier+Prime&display=swap');
+
 body {
     margin: 0;
     height: 100vh;
@@ -31,22 +33,44 @@ body {
     width: 100%;
     height: 230px;
     background: url('assets/envelope-texture.jpg') center/cover no-repeat;
-    filter: brightness(0.85); /* Abdunkeln */
+    filter: brightness(0.85);
     border-radius: 6px;
     z-index: 1;
 }
 
-/* Vorderseite mit Schrägen korrekt von oben zu tieferem Siegelpunkt */
+/* Brief */
+.letter {
+    position: absolute;
+    top: 150px + 230px; /* Start hinter Rückseite */
+    width: 100%;
+    height: 230px;
+    background: url('assets/paper-texture.png') center/cover no-repeat;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Courier Prime', monospace;
+    font-size: 20px;
+    color: #333;
+    text-align: center;
+    padding: 20px;
+    box-sizing: border-box;
+
+    /* Animation */
+    transform: translateY(0);
+    animation: riseLetter 2s ease-out forwards;
+}
+
+/* Vorderseite mit Schrägen */
 .envelope-front {
     position: absolute;
-    top: 150px; /* exakt auf Rückseite */
+    top: 150px;
     width: 100%;
     height: 230px;
     background: url('assets/envelope-texture.jpg') center/cover no-repeat;
-
     clip-path: polygon(
         0% 0%,       /* obere linke Ecke */
-        50% 115px,   /* Siegelpunkt in der Mitte des Rechtecks */
+        50% 115px,   /* Siegelpunkt in Mitte des Rechtecks */
         100% 0%,     /* obere rechte Ecke */
         100% 100%,   /* untere rechte Ecke */
         0% 100%      /* untere linke Ecke */
@@ -88,6 +112,12 @@ body {
     color: white;
     cursor: pointer;
 }
+
+/* Brief Animation */
+@keyframes riseLetter {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-115px); } /* bis unter die Klappe */
+}
 </style>
 </head>
 
@@ -96,6 +126,9 @@ body {
 <div class="wrapper">
     <div class="flap"></div>
     <div class="envelope-front"></div>
+    <div class="letter">
+        For you and me. For us. For every "i miss you" and "see you soon".
+    </div>
     <div class="envelope-back"></div>
 </div>
 
