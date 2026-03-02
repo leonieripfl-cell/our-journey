@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Envelope with Wax Seal Corrected</title>
+<title>Envelope with Wax Seal Adjusted</title>
 
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Courier+Prime&display=swap');
@@ -52,7 +52,7 @@ body {
 /* Brief */
 .letter {
     position: absolute;
-    top: 150px; /* direkt über Rückseite */
+    top: 150px;
     width: 100%;
     height: 230px;
     background: url('assets/paper-texture.png') center/cover no-repeat;
@@ -79,7 +79,7 @@ body {
     background: url('assets/envelope-texture.jpg') center/cover no-repeat;
     clip-path: polygon(
         0% 0%,       
-        50% 115px,   /* Siegelpunkt in der Mitte der Vorderseite */
+        50% 115px,   
         100% 0%,     
         100% 100%,   
         0% 100%      
@@ -87,15 +87,15 @@ body {
     z-index: 4;
 }
 
-/* Wachssiegel auf Vorderseite */
+/* Wachssiegel auf Vorderseite, etwas größer und 5,5cm tiefer */
 .seal {
     position: absolute;
-    width: 60px;
-    height: 60px;
-    top: 150px + 115px - 30px; /* 150px top + Siegelpunkt - halbe Höhe des Siegels */
+    width: 80px;
+    height: 80px;
+    top: calc(150px + 115px + 55px - 40px); /* top + Siegelpunkt + 55px Verschiebung - Hälfte der Höhe */
     left: 50%;
     transform: translateX(-50%);
-    z-index: 5; /* über Vorderseite, aber unter Klappe */
+    z-index: 4; /* auf Vorderseite */
 }
 
 /* Passwortfeld */
