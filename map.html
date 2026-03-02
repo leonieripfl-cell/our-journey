@@ -7,6 +7,8 @@
 
 <!-- Leaflet CSS -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+<!-- Google Fonts: Courier Prime -->
+<link href="https://fonts.googleapis.com/css2?family=Courier+Prime&display=swap" rel="stylesheet">
 
 <style>
 body, html {
@@ -18,6 +20,21 @@ body, html {
 #map {
     width: 100%;
     height: 100vh;
+}
+
+/* Tage zusammen Feld */
+#daysTogether {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 1000;
+    background: rgba(255,255,255,0.85);
+    padding: 10px 15px;
+    border-radius: 8px;
+    font-family: 'Courier Prime', monospace;
+    font-size: 16px;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
 }
 
 /* Popup-Fotoalbum */
@@ -90,6 +107,9 @@ body, html {
 </head>
 <body>
 
+<!-- Tage zusammen -->
+<div id="daysTogether">Tage zusammen: <span id="daysCount">0</span></div>
+
 <!-- Icon-Leiste mit PNGs -->
 <div id="iconBar">
     <div id="planeIcon" class="icon-button" title="Papierflieger">
@@ -131,8 +151,6 @@ body, html {
 <script>
 // Karte initialisieren
 const map = L.map('map').setView([48.2082, 16.3738], 4);
-
-// Schönerer Tile-Layer
 L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
     attribution: '&copy; OSM &copy; CARTO',
     subdomains: 'abcd',
@@ -143,7 +161,7 @@ L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
 const houseIcon = L.icon({iconUrl:'assets/house.png', iconSize:[40,40], iconAnchor:[20,40]});
 const planeIcon = L.icon({iconUrl:'assets/paperplane.png', iconSize:[40,40], iconAnchor:[20,20]});
 
-// Hauptmarker
+// Marker
 const edinburgh = L.marker([55.9533, -3.1883], {icon: houseIcon}).addTo(map).bindPopup('<b>Edinburgh</b>');
 const wien = L.marker([48.2082, 16.3738], {icon: houseIcon}).addTo(map).bindPopup('<b>Wien</b>');
 
@@ -217,6 +235,19 @@ document.getElementById('savePin').addEventListener('click', () => {
     document.getElementById('pinText').value = '';
     addPinForm.style.display = 'none';
 });
+
+// Tage zusammen
+function updateDaysTogether() {
+    const startDate = new Date('2025-04-14');
+    const today = new Date();
+    const diffTime = today - startDate;
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+    document.getElementById('daysCount').textContent = diffDays;
+}
+
+updateDaysTogether();
+setInterval(updateDaysTogether, 60*1000);
+
 </script>
 
 </body>
