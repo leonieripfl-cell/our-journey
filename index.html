@@ -24,7 +24,7 @@ body {
     position: relative;
     width: 420px;
     height: 380px;
-    overflow: hidden; /* verhindert dass der Brief unterhalb sichtbar ist */
+    overflow: hidden;
 }
 
 /* Rückseite */
@@ -57,7 +57,7 @@ body {
     width: 100%;
     height: 230px;
     background: url('assets/paper-texture.png') center/cover no-repeat;
-    z-index: 3; /* über Klappe, unter Vorderseite */
+    z-index: 3;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -67,7 +67,7 @@ body {
     text-align: center;
     padding: 20px;
     box-sizing: border-box;
-    transform: translateY(50px); /* tiefer Start */
+    transform: translateY(50px);
     animation: riseLetter 2s ease-out forwards;
 }
 
@@ -106,14 +106,18 @@ body {
     gap: 15px;
 }
 
-.password input {
+/* Dummy-Feld fängt Autofill ab */
+.password input.dummy {
+    display: none;
+}
+
+.password input.real {
     padding: 12px 18px;
     border-radius: 8px;
     border: 1px solid #ccc;
     width: 200px;
     text-align: center;
-    value: "";          /* leer beim Start */
-    autocomplete: off;  /* kein automatisches Ausfüllen */
+    autocomplete: new-password; /* verhindert Autofill */
 }
 
 .password button {
@@ -127,7 +131,7 @@ body {
 
 /* Brief Animation */
 @keyframes riseLetter {
-    0% { transform: translateY(50px); }  /* tiefer Start */
+    0% { transform: translateY(50px); }
     100% { transform: translateY(-115px); }
 }
 </style>
@@ -150,7 +154,11 @@ body {
 </div>
 
 <div class="password">
-    <input type="password" placeholder="Enter date" value="" autocomplete="off">
+    <!-- Dummy-Feld -->
+    <input type="text" class="dummy" name="fakeusernameremembered">
+
+    <!-- echtes Passwortfeld -->
+    <input type="password" class="real" name="password" placeholder="Enter date" autocomplete="new-password">
     <button>Open</button>
 </div>
 
