@@ -22,10 +22,10 @@ body, html {
     height: 100vh;
 }
 
-/* Tage zusammen Feld */
+/* Tage together Feld unten links */
 #daysTogether {
     position: absolute;
-    top: 20px;
+    bottom: 20px;
     left: 20px;
     z-index: 1000;
     background: rgba(255,255,255,0.85);
@@ -107,10 +107,10 @@ body, html {
 </head>
 <body>
 
-<!-- Tage zusammen -->
-<div id="daysTogether">Tage zusammen: <span id="daysCount">0</span></div>
+<!-- Tage together unten links -->
+<div id="daysTogether"><span id="daysCount">0</span> Tage together</div>
 
-<!-- Icon-Leiste mit PNGs -->
+<!-- Icon-Leiste oben rechts -->
 <div id="iconBar">
     <div id="planeIcon" class="icon-button" title="Papierflieger">
         <img src="assets/plane.png" alt="Papierflieger" style="width: 80%; height: 80%;">
@@ -236,7 +236,7 @@ document.getElementById('savePin').addEventListener('click', () => {
     addPinForm.style.display = 'none';
 });
 
-// Tage zusammen
+// Tage together unten links
 function updateDaysTogether() {
     const startDate = new Date('2025-04-14');
     const today = new Date();
@@ -244,7 +244,6 @@ function updateDaysTogether() {
     const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
     document.getElementById('daysCount').textContent = diffDays;
 }
-
 updateDaysTogether();
 setInterval(updateDaysTogether, 60*1000);
 
