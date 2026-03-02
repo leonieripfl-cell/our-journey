@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Envelope Step 2</title>
+<title>Envelope Step 3</title>
 
 <style>
 body {
@@ -24,7 +24,7 @@ body {
     height: 380px;
 }
 
-/* Umschlag-Rechteck */
+/* Umschlag-Rückseite */
 .envelope-back {
     position: absolute;
     top: 150px;
@@ -32,25 +32,37 @@ body {
     height: 230px;
     background: url('assets/envelope-texture.jpg') center/cover no-repeat;
     border-radius: 6px;
+    z-index: 1;
+}
+
+/* Vorderseite mit Schrägen */
+.envelope-front {
+    position: absolute;
+    top: 150px; /* exakt auf der Rückseite */
+    width: 100%;
+    height: 230px;
+    background: url('assets/envelope-texture.jpg') center/cover no-repeat;
+
+    /* Schrägen vom unteren Rechteck zu Siegelpunkt oben */
+    clip-path: polygon(
+        0% 0%,       /* obere linke Ecke */
+        0% 100%,     /* untere linke Ecke */
+        50% 40px,    /* Punkt direkt unter Siegel (oberhalb des Rechtecks) */
+        100% 100%,   /* untere rechte Ecke */
+        100% 0%      /* obere rechte Ecke */
+    );
+    z-index: 3;
 }
 
 /* Klappe */
 .flap {
     position: absolute;
-    top: 1px;
+    top: 1px; /* minimal nach unten geschoben */
     width: 100%;
     height: 150px;
     background: url('assets/envelope-texture.jpg') center/cover no-repeat;
-
-    /* leicht abgerundete obere Ecken */
-    border-top-left-radius: 12px;
-    border-top-right-radius: 12px;
-
-    clip-path: polygon(
-        2% 100%, 
-        50% 4%, 
-        98% 100%
-    );
+    clip-path: polygon(0 100%, 50% 0%, 100% 100%);
+    z-index: 4;
 }
 
 /* Passwortfeld */
@@ -83,6 +95,7 @@ body {
 
 <div class="wrapper">
     <div class="flap"></div>
+    <div class="envelope-front"></div>
     <div class="envelope-back"></div>
 </div>
 
