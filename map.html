@@ -47,7 +47,6 @@ body, html {
     justify-content: center;
     cursor: pointer;
     box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-    font-size: 24px;
 }
 
 /* Panels */
@@ -91,10 +90,17 @@ body, html {
 </head>
 <body>
 
+<!-- Icon-Leiste mit PNGs -->
 <div id="iconBar">
-    <div id="planeIcon" class="icon-button" title="Papierflieger">&#9993;</div>
-    <div id="penIcon" class="icon-button" title="Brief verfassen">&#9998;</div>
-    <div id="pinIcon" class="icon-button" title="Pin hinzufügen">&#128205;</div>
+    <div id="planeIcon" class="icon-button" title="Papierflieger">
+        <img src="assets/plane.png" alt="Papierflieger" style="width: 80%; height: 80%;">
+    </div>
+    <div id="penIcon" class="icon-button" title="Brief verfassen">
+        <img src="assets/pen.png" alt="Füllfeder" style="width: 80%; height: 80%;">
+    </div>
+    <div id="pinIcon" class="icon-button" title="Pin hinzufügen">
+        <img src="assets/pin.png" alt="Pin" style="width: 80%; height: 80%;">
+    </div>
 </div>
 
 <!-- Panels -->
@@ -125,6 +131,8 @@ body, html {
 <script>
 // Karte initialisieren
 const map = L.map('map').setView([48.2082, 16.3738], 4);
+
+// Schönerer Tile-Layer
 L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
     attribution: '&copy; OSM &copy; CARTO',
     subdomains: 'abcd',
@@ -135,7 +143,7 @@ L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
 const houseIcon = L.icon({iconUrl:'assets/house.png', iconSize:[40,40], iconAnchor:[20,40]});
 const planeIcon = L.icon({iconUrl:'assets/paperplane.png', iconSize:[40,40], iconAnchor:[20,20]});
 
-// Marker
+// Hauptmarker
 const edinburgh = L.marker([55.9533, -3.1883], {icon: houseIcon}).addTo(map).bindPopup('<b>Edinburgh</b>');
 const wien = L.marker([48.2082, 16.3738], {icon: houseIcon}).addTo(map).bindPopup('<b>Wien</b>');
 
