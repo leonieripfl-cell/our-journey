@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Envelope Animation Front Flap</title>
+<title>Envelope Stable Version</title>
 
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Courier+Prime&display=swap');
@@ -19,14 +19,15 @@ body {
     background: url('assets/fabric-blue.jpg') repeat;
 }
 
+/* Wrapper mit Clipping */
 .wrapper {
     position: relative;
     width: 420px;
     height: 380px;
-    overflow: hidden;
+    overflow: hidden; /* verhindert dass der Brief unterhalb sichtbar ist */
 }
 
-/* Rückseite */
+/* Rückseite des Umschlags */
 .envelope-back {
     position: absolute;
     top: 150px;
@@ -38,16 +39,15 @@ body {
     z-index: 1;
 }
 
-/* Klappe vorne über dem Brief, animiert die Spitze */
+/* Klappe */
 .flap {
     position: absolute;
-    top: 0px;
+    top: 1px;
     width: 100%;
     height: 150px;
     background: url('assets/envelope-texture.jpg') center/cover no-repeat;
-    z-index: 5; /* über dem Brief */
-    clip-path: polygon(0% 100%, 50% 0%, 100% 100%);
-    animation: openFlap 1s ease-out forwards;
+    clip-path: polygon(0 100%, 50% 0%, 100% 100%);
+    z-index: 2;
 }
 
 /* Brief */
@@ -57,7 +57,7 @@ body {
     width: 100%;
     height: 230px;
     background: url('assets/paper-texture.png') center/cover no-repeat;
-    z-index: 3; /* unter Klappe vorne */
+    z-index: 3; /* über Klappe zurückliegend, unter Vorderseite */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -69,7 +69,7 @@ body {
     box-sizing: border-box;
     transform: translateY(50px);
     animation: riseLetter 1s ease-out forwards;
-    animation-delay: 1s;
+    animation-delay: 0.5s; /* leicht verzögert */
     opacity: 0;
 }
 
@@ -125,13 +125,6 @@ body {
     cursor: pointer;
 }
 
-/* Animationen */
-/* Flap öffnet die Spitze nach oben */
-@keyframes openFlap {
-    0% { clip-path: polygon(0% 100%, 50% 50px, 100% 100%); } /* Spitze vorne nach unten über Brief */
-    100% { clip-path: polygon(0% 100%, 50% 0%, 100% 100%); }  /* Endposition */
-}
-
 /* Brief Animation */
 @keyframes riseLetter {
     0% { transform: translateY(50px); opacity: 0; }
@@ -144,6 +137,7 @@ body {
 
 <div class="wrapper">
     <div class="envelope-back"></div>
+    <div class="flap"></div>
     <div class="letter">
         For you and me.<br>
         For us.<br>
@@ -151,7 +145,6 @@ body {
         and "see you soon".
     </div>
     <div class="envelope-front"></div>
-    <div class="flap"></div> <!-- Flap vorne -->
     <img src="assets/div.seal.png" alt="Wax Seal" class="seal">
 </div>
 
