@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Envelope with Letter Lines</title>
+<title>Envelope with Wax Seal</title>
 
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Courier+Prime&display=swap');
@@ -61,7 +61,7 @@ body {
     align-items: center;
     justify-content: center;
     font-family: 'Courier Prime', monospace;
-    font-size: 16px; /* kleinere Schrift */
+    font-size: 16px;
     color: #333;
     text-align: center;
     padding: 20px;
@@ -84,7 +84,18 @@ body {
         100% 100%,   
         0% 100%      
     );
-    z-index: 4;
+    z-index: 4; /* oberste Ebene */
+}
+
+/* Wachssiegel */
+.seal {
+    position: absolute;
+    width: 60px;  /* Größe nach Wunsch anpassen */
+    height: 60px;
+    top: 150px + 115px - 30px; /* Siegel mittig an Vorderseite: top + Siegelpunkt - Hälfte der Höhe */
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 5; /* oberhalb Vorderseite */
 }
 
 /* Passwortfeld */
@@ -130,6 +141,9 @@ body {
         and "see you soon".
     </div>
     <div class="envelope-front"></div>
+
+    <!-- Wachssiegel -->
+    <img src="assets/div.seal.png" alt="Wax Seal" class="seal">
 </div>
 
 <div class="password">
