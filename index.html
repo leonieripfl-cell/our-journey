@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Envelope with Wax Seal</title>
+<title>Envelope with Wax Seal Corrected</title>
 
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Courier+Prime&display=swap');
@@ -79,23 +79,23 @@ body {
     background: url('assets/envelope-texture.jpg') center/cover no-repeat;
     clip-path: polygon(
         0% 0%,       
-        50% 115px,   
+        50% 115px,   /* Siegelpunkt in der Mitte der Vorderseite */
         100% 0%,     
         100% 100%,   
         0% 100%      
     );
-    z-index: 4; /* oberste Ebene */
+    z-index: 4;
 }
 
-/* Wachssiegel */
+/* Wachssiegel auf Vorderseite */
 .seal {
     position: absolute;
-    width: 60px;  /* Größe nach Wunsch anpassen */
+    width: 60px;
     height: 60px;
-    top: 150px + 115px - 30px; /* Siegel mittig an Vorderseite: top + Siegelpunkt - Hälfte der Höhe */
+    top: 150px + 115px - 30px; /* 150px top + Siegelpunkt - halbe Höhe des Siegels */
     left: 50%;
     transform: translateX(-50%);
-    z-index: 5; /* oberhalb Vorderseite */
+    z-index: 5; /* über Vorderseite, aber unter Klappe */
 }
 
 /* Passwortfeld */
