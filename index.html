@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Envelope Letter Adjusted Flap</title>
+<title>Envelope with Letter Lines</title>
 
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Courier+Prime&display=swap');
@@ -38,10 +38,21 @@ body {
     z-index: 1;
 }
 
+/* Klappe */
+.flap {
+    position: absolute;
+    top: 1px;
+    width: 100%;
+    height: 150px;
+    background: url('assets/envelope-texture.jpg') center/cover no-repeat;
+    clip-path: polygon(0 100%, 50% 0%, 100% 100%);
+    z-index: 2;
+}
+
 /* Brief */
 .letter {
     position: absolute;
-    top: 150px; /* über Rückseite */
+    top: 150px; /* direkt über Rückseite */
     width: 100%;
     height: 230px;
     background: url('assets/paper-texture.png') center/cover no-repeat;
@@ -50,7 +61,7 @@ body {
     align-items: center;
     justify-content: center;
     font-family: 'Courier Prime', monospace;
-    font-size: 20px;
+    font-size: 16px; /* kleinere Schrift */
     color: #333;
     text-align: center;
     padding: 20px;
@@ -73,18 +84,7 @@ body {
         100% 100%,   
         0% 100%      
     );
-    z-index: 4; /* oberste Ebene */
-}
-
-/* Klappe – zwei Ebenen zurück */
-.flap {
-    position: absolute;
-    top: 1px;
-    width: 100%;
-    height: 150px;
-    background: url('assets/envelope-texture.jpg') center/cover no-repeat;
-    clip-path: polygon(0 100%, 50% 0%, 100% 100%);
-    z-index: 2; /* unter Brief, hinter Vorderseite */
+    z-index: 4;
 }
 
 /* Passwortfeld */
@@ -111,7 +111,7 @@ body {
     cursor: pointer;
 }
 
-/* Animation */
+/* Brief Animation */
 @keyframes riseLetter {
     0% { transform: translateY(0); }
     100% { transform: translateY(-115px); }
@@ -124,7 +124,10 @@ body {
     <div class="envelope-back"></div>
     <div class="flap"></div>
     <div class="letter">
-        For you and me. For us. For every "i miss you" and "see you soon".
+        For you and me.<br>
+        For us.<br>
+        For every "i miss you"<br>
+        and "see you soon".
     </div>
     <div class="envelope-front"></div>
 </div>
