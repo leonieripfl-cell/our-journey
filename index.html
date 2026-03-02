@@ -27,7 +27,7 @@ body {
 /* Umschlag-Rechteck */
 .envelope-back {
     position: absolute;
-    top: 150px;               /* feste Position */
+    top: 150px;
     width: 100%;
     height: 230px;
     background: url('assets/envelope-texture.jpg') center/cover no-repeat;
@@ -37,12 +37,11 @@ body {
 /* Klappe */
 .flap {
     position: absolute;
-    top: 0;                   /* sitzt direkt oben */
+    top: 1px; /* ← 1px nach unten geschoben */
     width: 100%;
     height: 150px;
     background: url('assets/envelope-texture.jpg') center/cover no-repeat;
 
-    /* Dreieck */
     clip-path: polygon(0 100%, 50% 0%, 100% 100%);
 }
 
