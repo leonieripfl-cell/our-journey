@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -22,7 +22,7 @@ body, html {
     height: 100vh;
 }
 
-/* Tage together Feld unten links */
+/* Days together field bottom left */
 #daysTogether {
     position: absolute;
     bottom: 20px;
@@ -37,13 +37,13 @@ body, html {
     box-shadow: 0 2px 5px rgba(0,0,0,0.3);
 }
 
-/* Popup-Fotoalbum */
+/* Popup photo album */
 .popup-album img {
     width: 100px;
     margin: 5px;
 }
 
-/* Icon-Leiste oben rechts */
+/* Icon bar top right */
 #iconBar {
     position: absolute;
     top: 20px;
@@ -66,6 +66,12 @@ body, html {
     box-shadow: 0 2px 5px rgba(0,0,0,0.3);
 }
 
+/* Smaller pen icon */
+#penIcon img {
+    width: 60%;
+    height: 60%;
+}
+
 /* Panels */
 .panel {
     position: absolute;
@@ -86,7 +92,7 @@ body, html {
     margin-top: 0;
 }
 
-/* Formularfelder */
+/* Form fields */
 .panel input, .panel textarea {
     width: 100%;
     margin-bottom: 8px;
@@ -103,44 +109,54 @@ body, html {
     border-radius: 4px;
     cursor: pointer;
 }
+
+/* Paper plane animation */
+.plane-animation {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    background: url('assets/paperplane.png') no-repeat center/contain;
+    z-index: 999;
+    pointer-events: none;
+}
 </style>
 </head>
 <body>
 
-<!-- Tage together unten links -->
-<div id="daysTogether"><span id="daysCount">0</span> Tage together</div>
+<!-- Days together -->
+<div id="daysTogether"><span id="daysCount">0</span> days together</div>
 
-<!-- Icon-Leiste oben rechts -->
+<!-- Icon bar -->
 <div id="iconBar">
-    <div id="planeIcon" class="icon-button" title="Papierflieger">
-        <img src="assets/plane.png" alt="Papierflieger" style="width: 80%; height: 80%;">
+    <div id="planeIcon" class="icon-button" title="Paperplanes">
+        <img src="assets/plane.png" alt="Paperplane">
     </div>
-    <div id="penIcon" class="icon-button" title="Brief verfassen">
-        <img src="assets/pen.png" alt="Füllfeder" style="width: 80%; height: 80%;">
+    <div id="penIcon" class="icon-button" title="Write a letter">
+        <img src="assets/pen.png" alt="Pen">
     </div>
-    <div id="pinIcon" class="icon-button" title="Pin hinzufügen">
-        <img src="assets/pin.png" alt="Pin" style="width: 80%; height: 80%;">
+    <div id="pinIcon" class="icon-button" title="Add Pin">
+        <img src="assets/pin.png" alt="Pin">
     </div>
 </div>
 
 <!-- Panels -->
 <div id="planePanel" class="panel">
-    <h3>Gesendete Papierflieger</h3>
+    <h3>Sent Paperplanes</h3>
     <ul id="planeList"></ul>
 </div>
 
 <div id="letterPanel" class="panel">
-    <h3>Neuen Brief verfassen</h3>
-    <textarea id="letterText" rows="5" placeholder="Schreibe hier deinen Brief..."></textarea>
-    <button id="sendLetter">Senden</button>
+    <h3>Write a Letter</h3>
+    <textarea id="letterText" rows="5" placeholder="Write your letter here..."></textarea>
+    <button id="sendLetter">Send</button>
 </div>
 
 <div id="addPinForm" class="panel">
-    <h3>Neuen Pin hinzufügen</h3>
-    <input type="text" id="pinName" placeholder="Name des Ortes">
-    <input type="text" id="pinImage" placeholder="Bild-URL">
+    <h3>Add a New Pin</h3>
+    <input type="text" id="pinName" placeholder="Place name">
+    <input type="text" id="pinImage" placeholder="Image URL">
     <input type="text" id="pinText" placeholder="Text">
-    <button id="savePin">Pin hinzufügen</button>
+    <button id="savePin">Add Pin</button>
 </div>
 
 <div id="map"></div>
@@ -149,7 +165,7 @@ body, html {
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
 <script>
-// Karte initialisieren
+// Map initialization
 const map = L.map('map').setView([48.2082, 16.3738], 4);
 L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
     attribution: '&copy; OSM &copy; CARTO',
@@ -159,19 +175,18 @@ L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
 
 // Icons
 const houseIcon = L.icon({iconUrl:'assets/house.png', iconSize:[40,40], iconAnchor:[20,40]});
-const planeIcon = L.icon({iconUrl:'assets/paperplane.png', iconSize:[40,40], iconAnchor:[20,20]});
 
-// Marker
+// Markers
 const edinburgh = L.marker([55.9533, -3.1883], {icon: houseIcon}).addTo(map).bindPopup('<b>Edinburgh</b>');
-const wien = L.marker([48.2082, 16.3738], {icon: houseIcon}).addTo(map).bindPopup('<b>Wien</b>');
+const vienna = L.marker([48.2082, 16.3738], {icon: houseIcon}).addTo(map).bindPopup('<b>Vienna</b>');
 
-// Beispielpins
+// Example pins
 const stirling = L.marker([56.1165, -3.9369]).addTo(map)
 .bindPopup('<div class="popup-album"><b>Stirling</b><br><img src="assets/stirling1.jpg"><img src="assets/stirling2.jpg"></div>');
 const budapest = L.marker([47.4979, 19.0402]).addTo(map)
 .bindPopup('<div class="popup-album"><b>Budapest</b><br><img src="assets/budapest1.jpg"><img src="assets/budapest2.jpg"></div>');
 
-// Papierflieger-Liste
+// Paperplanes list
 let paperPlanes = JSON.parse(localStorage.getItem('paperPlanes') || '[]');
 const planeList = document.getElementById('planeList');
 function updatePlaneList() {
@@ -184,7 +199,7 @@ function updatePlaneList() {
 }
 updatePlaneList();
 
-// Icon-Buttons
+// Icon buttons
 const planePanel = document.getElementById('planePanel');
 const letterPanel = document.getElementById('letterPanel');
 const addPinForm = document.getElementById('addPinForm');
@@ -207,25 +222,27 @@ document.getElementById('pinIcon').addEventListener('click', () => {
     letterPanel.style.display = 'none';
 });
 
-// Brief senden (Papierflieger)
+// Send letter (with animated paperplane)
 document.getElementById('sendLetter').addEventListener('click', () => {
     const msg = document.getElementById('letterText').value;
     if(msg) {
-        paperPlanes.push(msg);
-        localStorage.setItem('paperPlanes', JSON.stringify(paperPlanes));
-        updatePlaneList();
-        alert("Brief gesendet!");
+        animatePlane(vienna.getLatLng(), edinburgh.getLatLng(), () => {
+            paperPlanes.push(msg);
+            localStorage.setItem('paperPlanes', JSON.stringify(paperPlanes));
+            updatePlaneList();
+            alert("Letter sent!");
+        });
         document.getElementById('letterText').value = '';
         letterPanel.style.display = 'none';
     }
 });
 
-// Pin hinzufügen
+// Add Pin
 document.getElementById('savePin').addEventListener('click', () => {
     const name = document.getElementById('pinName').value;
     const img = document.getElementById('pinImage').value;
     const text = document.getElementById('pinText').value;
-    if(!name) { alert("Bitte Namen eingeben!"); return; }
+    if(!name) { alert("Please enter a name!"); return; }
 
     L.marker(map.getCenter()).addTo(map)
         .bindPopup(`<div class="popup-album"><b>${name}</b><br>${text}<br><img src="${img}"></div>`);
@@ -236,7 +253,7 @@ document.getElementById('savePin').addEventListener('click', () => {
     addPinForm.style.display = 'none';
 });
 
-// Tage together unten links
+// Days together bottom left
 function updateDaysTogether() {
     const startDate = new Date('2025-04-14');
     const today = new Date();
@@ -247,7 +264,37 @@ function updateDaysTogether() {
 updateDaysTogether();
 setInterval(updateDaysTogether, 60*1000);
 
-</script>
+// Animate paper plane
+function animatePlane(startLatLng, endLatLng, callback) {
+    const planeEl = document.createElement('div');
+    planeEl.className = 'plane-animation';
+    document.body.appendChild(planeEl);
 
+    const startPoint = map.latLngToContainerPoint(startLatLng);
+    const endPoint = map.latLngToContainerPoint(endLatLng);
+
+    planeEl.style.left = startPoint.x + 'px';
+    planeEl.style.top = startPoint.y + 'px';
+
+    const duration = 2000; // 2 seconds
+    const startTime = performance.now();
+
+    function step(now) {
+        const progress = Math.min((now - startTime)/duration, 1);
+        const x = startPoint.x + (endPoint.x - startPoint.x)*progress;
+        const y = startPoint.y + (endPoint.y - startPoint.y)*progress;
+        planeEl.style.left = x + 'px';
+        planeEl.style.top = y + 'px';
+        if(progress < 1) {
+            requestAnimationFrame(step);
+        } else {
+            document.body.removeChild(planeEl);
+            if(callback) callback();
+        }
+    }
+
+    requestAnimationFrame(step);
+}
+</script>
 </body>
 </html>
