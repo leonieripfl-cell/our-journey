@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Envelope with Letter Above Flap</title>
+<title>Envelope with Letter Correct Layer</title>
 
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Courier+Prime&display=swap');
@@ -38,6 +38,27 @@ body {
     z-index: 1;
 }
 
+/* Brief */
+.letter {
+    position: absolute;
+    top: 150px; /* direkt über Rückseite */
+    width: 100%;
+    height: 230px;
+    background: url('assets/paper-texture.png') center/cover no-repeat;
+    z-index: 2; /* über Rückseite, unter Vorderseite */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Courier Prime', monospace;
+    font-size: 20px;
+    color: #333;
+    text-align: center;
+    padding: 20px;
+    box-sizing: border-box;
+    transform: translateY(0);
+    animation: riseLetter 2s ease-out forwards;
+}
+
 /* Vorderseite mit Schrägen */
 .envelope-front {
     position: absolute;
@@ -52,31 +73,10 @@ body {
         100% 100%,   /* untere rechte Ecke */
         0% 100%      /* untere linke Ecke */
     );
-    z-index: 2;
+    z-index: 3; /* über Brief */
 }
 
-/* Brief */
-.letter {
-    position: absolute;
-    top: 150px; /* startet über Rückseite */
-    width: 100%;
-    height: 230px;
-    background: url('assets/paper-texture.png') center/cover no-repeat;
-    z-index: 4; /* über Klappe */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: 'Courier Prime', monospace;
-    font-size: 20px;
-    color: #333;
-    text-align: center;
-    padding: 20px;
-    box-sizing: border-box;
-    transform: translateY(0);
-    animation: riseLetter 2s ease-out forwards;
-}
-
-/* Klappe nur optisch oben, kleiner z-index */
+/* Klappe */
 .flap {
     position: absolute;
     top: 1px;
@@ -84,7 +84,7 @@ body {
     height: 150px;
     background: url('assets/envelope-texture.jpg') center/cover no-repeat;
     clip-path: polygon(0 100%, 50% 0%, 100% 100%);
-    z-index: 3; /* unter Brief */
+    z-index: 4; /* ganz oben */
 }
 
 /* Passwortfeld */
@@ -111,10 +111,10 @@ body {
     cursor: pointer;
 }
 
-/* Animation */
+/* Brief Animation */
 @keyframes riseLetter {
     0% { transform: translateY(0); }
-    100% { transform: translateY(-115px); } /* fährt über die Klappe */
+    100% { transform: translateY(-115px); } /* fährt nach oben, bleibt unter Vorderseite */
 }
 </style>
 </head>
@@ -122,11 +122,11 @@ body {
 
 <div class="wrapper">
     <div class="envelope-back"></div>
-    <div class="envelope-front"></div>
-    <div class="flap"></div>
     <div class="letter">
         For you and me. For us. For every "i miss you" and "see you soon".
     </div>
+    <div class="envelope-front"></div>
+    <div class="flap"></div>
 </div>
 
 <div class="password">
