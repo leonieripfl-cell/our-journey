@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Envelope with Wax Seal - Letter Hidden Start</title>
+<title>Envelope Animation Sequential</title>
 
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Courier+Prime&display=swap');
@@ -48,6 +48,9 @@ body {
     background: url('assets/envelope-texture.jpg') center/cover no-repeat;
     clip-path: polygon(0 100%, 50% 0%, 100% 100%);
     z-index: 2;
+    transform-origin: top center;
+    transform: rotateX(0deg); /* Start geschlossen */
+    animation: openFlap 1s ease-out forwards;
 }
 
 /* Brief */
@@ -68,7 +71,9 @@ body {
     padding: 20px;
     box-sizing: border-box;
     transform: translateY(50px); /* tiefer Start */
-    animation: riseLetter 2s ease-out forwards;
+    animation: riseLetter 1s ease-out forwards;
+    animation-delay: 1s; /* erst nachdem Klappe öffnet */
+    opacity: 0; /* unsichtbar, bis die Animation startet */
 }
 
 /* Vorderseite mit Schrägen */
@@ -123,10 +128,17 @@ body {
     cursor: pointer;
 }
 
-/* Brief Animation */
+/* Animation Klappe */
+@keyframes openFlap {
+    0% { transform: rotateX(0deg); }
+    100% { transform: rotateX(-90deg); } /* öffnet nach hinten */
+}
+
+/* Animation Brief */
 @keyframes riseLetter {
-    0% { transform: translateY(50px); }  /* tiefer Start */
-    100% { transform: translateY(-115px); }
+    0% { transform: translateY(50px); opacity: 0; }
+    50% { opacity: 1; }
+    100% { transform: translateY(-115px); opacity: 1; }
 }
 </style>
 </head>
