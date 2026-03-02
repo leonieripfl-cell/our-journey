@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Envelope with Wax Seal Higher</title>
+<title>Envelope with Wax Seal - Letter Lower Start</title>
 
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Courier+Prime&display=swap');
@@ -66,7 +66,7 @@ body {
     text-align: center;
     padding: 20px;
     box-sizing: border-box;
-    transform: translateY(0);
+    transform: translateY(50px); /* tiefer starten */
     animation: riseLetter 2s ease-out forwards;
 }
 
@@ -87,12 +87,12 @@ body {
     z-index: 4;
 }
 
-/* Wachssiegel auf Vorderseite, noch etwas höher */
+/* Wachssiegel */
 .seal {
     position: absolute;
     width: 80px;
     height: 80px;
-    top: calc(150px + 115px + 5px - 40px); /* top + Siegelpunkt + 5px Verschiebung - Hälfte Höhe */
+    top: calc(150px + 115px + 5px - 40px);
     left: 50%;
     transform: translateX(-50%);
     z-index: 4;
@@ -124,7 +124,7 @@ body {
 
 /* Brief Animation */
 @keyframes riseLetter {
-    0% { transform: translateY(0); }
+    0% { transform: translateY(50px); }  /* tiefer starten */
     100% { transform: translateY(-115px); }
 }
 </style>
