@@ -26,11 +26,11 @@ body, html {
     bottom: 20px;
     left: 20px;
     z-index: 1000;
-    background: rgba(255,255,255,0.85);
+    background: rgba(255,255,255,0.9);
     padding: 10px 15px;
     border-radius: 8px;
     font-size: 16px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.25);
 }
 
 /* Icon bar */
@@ -46,48 +46,47 @@ body, html {
 .icon-button {
     width: 50px;
     height: 50px;
-    border-radius: 8px;
+    border-radius: 10px;
     background: white;
-    border: 1px solid #ccc;
+    border: 1px solid #ddd;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.25);
 }
 
 .icon-button img {
-    width: 70%;
-    height: 70%;
+    width: 65%;
+    height: 65%;
     object-fit: contain;
 }
 
 #penIcon img {
-    width: 60%;
-    height: 60%;
+    width: 55%;
 }
 
 /* Panels */
 .panel {
     position: absolute;
-    top: 80px;
+    top: 85px;
     right: 20px;
     z-index: 1000;
     background: white;
     padding: 15px;
-    border-radius: 8px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    border-radius: 10px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.3);
     display: none;
-    width: 250px;
+    width: 260px;
     max-height: 300px;
     overflow-y: auto;
 }
 
-.panel input, .panel textarea {
+.panel textarea {
     width: 100%;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
     padding: 6px;
-    border-radius: 4px;
+    border-radius: 6px;
     border: 1px solid #ccc;
 }
 
@@ -97,19 +96,18 @@ body, html {
     background: #8b0000;
     color: white;
     border: none;
-    border-radius: 4px;
+    border-radius: 6px;
     cursor: pointer;
 }
 
-/* Paperplane */
 .plane-animation {
     position: absolute;
-    width: 40px;
-    height: 40px;
+    width: 42px;
+    height: 42px;
     background-size: contain;
     background-repeat: no-repeat;
-    z-index: 999;
     pointer-events: none;
+    z-index: 999;
 }
 </style>
 </head>
@@ -142,33 +140,57 @@ body, html {
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
 <script>
-// Map
-const map = L.map('map').setView([51, 10], 5);
+// ================= MAP =================
+
+// Start zoomed on Europe
+const map = L.map('map').setView([54, 15], 4);
+
 L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
     attribution: '&copy; OSM &copy; CARTO',
     subdomains: 'abcd',
     maxZoom: 19
 }).addTo(map);
 
-// Icons
-const viennaIcon = L.icon({iconUrl:'assets/house.vienna.png', iconSize:[40,40], iconAnchor:[20,40]});
-const edinburghIcon = L.icon({iconUrl:'assets/house.edinburgh.png', iconSize:[40,40], iconAnchor:[20,40]});
+// Custom Icons
+const viennaIcon = L.icon({
+    iconUrl: 'assets/house.vienna.png',
+    iconSize: [42, 42],
+    iconAnchor: [21, 42]
+});
 
+const edinburghIcon = L.icon({
+    iconUrl: 'assets/house.edinburgh.png',
+    iconSize: [42, 42],
+    iconAnchor: [21, 42]
+});
+
+const travelPinIcon = L.icon({
+    iconUrl: 'assets/pin.on.map.png',
+    iconSize: [32, 32],
+    iconAnchor: [16, 32]
+});
+
+// Houses
 const vienna = L.marker([48.2082, 16.3738], {icon: viennaIcon}).addTo(map).bindPopup("Vienna");
 const edinburgh = L.marker([55.9533, -3.1883], {icon: edinburghIcon}).addTo(map).bindPopup("Edinburgh");
 
-// Panels
+// Example travel pin (so icon is visible again)
+L.marker([47.4979, 19.0402], {icon: travelPinIcon}).addTo(map).bindPopup("Budapest");
+
+// ================= PANELS =================
+
 planeIcon.onclick = () => {
-    planePanel.style.display = planePanel.style.display === "none" ? "block" : "none";
+    planePanel.style.display = planePanel.style.display === "block" ? "none" : "block";
     letterPanel.style.display = "none";
 };
 
 penIcon.onclick = () => {
-    letterPanel.style.display = letterPanel.style.display === "none" ? "block" : "none";
+    letterPanel.style.display = letterPanel.style.display === "block" ? "none" : "block";
     planePanel.style.display = "none";
 };
 
-// Paperplanes storage
+// ================= PAPERPLANES =================
+
 let paperPlanes = JSON.parse(localStorage.getItem("paperPlanes") || "[]");
 const planeList = document.getElementById("planeList");
 
@@ -182,7 +204,6 @@ function updatePlaneList() {
 }
 updatePlaneList();
 
-// SEND LETTER WITH CURVED FLIGHT + TRAIL
 document.getElementById("sendLetter").addEventListener("click", () => {
 
     const msg = letterText.value;
@@ -190,9 +211,11 @@ document.getElementById("sendLetter").addEventListener("click", () => {
 
     let sender = prompt("Who are you? (Saul / Leonie)");
     sender = sender?.trim().toLowerCase();
-    if(sender !== "saul" && sender !== "leonie") { alert("Invalid sender!"); return; }
+    if(sender !== "saul" && sender !== "leonie") {
+        alert("Invalid sender!");
+        return;
+    }
 
-    // Correct direction
     const start = sender === "saul" ? edinburgh.getLatLng() : vienna.getLatLng();
     const end = sender === "saul" ? vienna.getLatLng() : edinburgh.getLatLng();
     const planeImg = sender === "saul"
@@ -207,22 +230,21 @@ document.getElementById("sendLetter").addEventListener("click", () => {
     plane.style.backgroundImage = `url('${planeImg}')`;
     document.body.appendChild(plane);
 
-    const trail = document.createElement("canvas");
-    trail.width = window.innerWidth;
-    trail.height = window.innerHeight;
-    trail.style.position = "absolute";
-    trail.style.left = 0;
-    trail.style.top = 0;
-    trail.style.pointerEvents = "none";
-    trail.style.zIndex = 998;
-    document.body.appendChild(trail);
+    const canvas = document.createElement("canvas");
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    canvas.style.position = "absolute";
+    canvas.style.left = 0;
+    canvas.style.top = 0;
+    canvas.style.pointerEvents = "none";
+    canvas.style.zIndex = 998;
+    document.body.appendChild(canvas);
 
-    const ctx = trail.getContext("2d");
+    const ctx = canvas.getContext("2d");
     ctx.setLineDash([6,6]);
-    ctx.strokeStyle = "rgba(0,0,0,0.6)";
     ctx.lineWidth = 2;
 
-    const duration = 2200;
+    const duration = 4000; // slower flight
     let startTime = null;
 
     function animate(timestamp) {
@@ -231,28 +253,35 @@ document.getElementById("sendLetter").addEventListener("click", () => {
 
         const x = startPoint.x + (endPoint.x - startPoint.x)*progress;
         const yLinear = startPoint.y + (endPoint.y - startPoint.y)*progress;
-        const curve = Math.sin(progress * Math.PI) * 120;
-        const y = yLinear - curve;
+        const curveHeight = 150;
+        const y = yLinear - Math.sin(progress * Math.PI) * curveHeight;
 
         plane.style.left = x + "px";
         plane.style.top = y + "px";
 
-        ctx.clearRect(0,0,trail.width,trail.height);
+        // Draw trailing arc (only last 20% of path)
+        ctx.clearRect(0,0,canvas.width,canvas.height);
         ctx.beginPath();
-        ctx.moveTo(startPoint.x, startPoint.y);
-        ctx.lineTo(x, y);
+
+        const trailStart = Math.max(0, progress - 0.2);
+
+        for(let t = trailStart; t <= progress; t += 0.01) {
+            const tx = startPoint.x + (endPoint.x - startPoint.x)*t;
+            const tyLinear = startPoint.y + (endPoint.y - startPoint.y)*t;
+            const ty = tyLinear - Math.sin(t * Math.PI) * curveHeight;
+
+            if(t === trailStart) ctx.moveTo(tx, ty);
+            else ctx.lineTo(tx, ty);
+        }
+
+        ctx.strokeStyle = `rgba(0,0,0,${1 - progress})`;
         ctx.stroke();
 
         if(progress < 1) {
             requestAnimationFrame(animate);
         } else {
             plane.remove();
-            setTimeout(() => {
-                trail.style.transition = "opacity 1s";
-                trail.style.opacity = 0;
-                setTimeout(()=>trail.remove(),1000);
-            }, 1000);
-
+            canvas.remove();
             paperPlanes.push(msg);
             localStorage.setItem("paperPlanes", JSON.stringify(paperPlanes));
             updatePlaneList();
@@ -265,7 +294,8 @@ document.getElementById("sendLetter").addEventListener("click", () => {
     letterPanel.style.display = "none";
 });
 
-// Days together
+// ================= DAYS TOGETHER =================
+
 function updateDaysTogether() {
     const startDate = new Date("2025-04-14");
     const today = new Date();
