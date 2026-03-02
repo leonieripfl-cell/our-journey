@@ -3,176 +3,157 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Our Letter</title>
+<title>Letter</title>
+
 <link href="https://fonts.googleapis.com/css2?family=Courier+Prime&display=swap" rel="stylesheet">
+
 <style>
-body {
-    margin: 0;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    padding-top: 150px;
-    background: url('assets/fabric-blue.jpg') repeat;
+body{
+    margin:0;
+    height:100vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    padding-top:150px;
+    background:url('assets/fabric-blue.jpg') repeat;
 }
 
-/* Wrapper */
-.wrapper {
-    position: relative;
-    width: 420px;
-    height: 260px;
-    perspective: 1200px;
+/* WRAPPER */
+.wrapper{
+    position:relative;
+    width:420px;
+    height:300px;
 }
 
-/* Umschlag-Rückseite */
-.envelope-back {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    height: 60%;
-    background: url('assets/envelope-texture.jpg') center/cover no-repeat;
-    border-radius: 6px;
-    z-index: 1;
+/* UMSCHLAG RECHTECK (RÜCKSEITE) */
+.envelope-back{
+    position:absolute;
+    bottom:0;
+    width:100%;
+    height:200px;
+    background:url('assets/envelope-texture.jpg') center/cover no-repeat;
+    border-radius:6px;
+    z-index:1;
 }
 
-/* Letter Container */
-.letter-container {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    height: 180px; /* verdeckt unteren Teil */
-    overflow: hidden;
-    z-index: 2;
+/* BRIEF */
+.letter{
+    position:absolute;
+    bottom:0;
+    left:5%;
+    width:90%;
+    height:260px;
+    padding:70px 60px;
+    box-sizing:border-box;
+    background:url('assets/paper-texture.png') center/cover no-repeat;
+    font-family:'Courier Prime', monospace;
+    font-size:12px;
+    line-height:1.7;
+    color:#222;
+    transform:translateY(180px); /* startet tief genug */
+    transition:transform 2s ease;
+    z-index:2;
 }
 
-/* Letter */
-.letter {
-    width: 110%;
-    left: -5%;
-    height: 230px;
-    padding: 60px 60px;
-    box-sizing: border-box;
-    background: url('assets/paper-texture.png') center/cover no-repeat;
-    font-family: 'Courier Prime', monospace;
-    font-size: 13px;
-    line-height: 1.8;
-    color: #222;
-    transform: translateY(120px); /* Start unter Umschlag */
-    transition: transform 2s ease;
+.letter p{
+    margin-left:50px;
 }
 
-.letter p {
-    margin: 0;
-    margin-left: 40px;
+/* VORDERSEITE MIT SCHRÄGEN */
+.envelope-front{
+    position:absolute;
+    bottom:0;
+    width:100%;
+    height:200px;
+    background:url('assets/envelope-texture.jpg') center/cover no-repeat;
+    clip-path:polygon(
+        0% 0%,
+        0% 100%,
+        50% 55%,
+        100% 100%,
+        100% 0%
+    );
+    z-index:3;
 }
 
-/* Umschlag-Vorderseite (Schrägen) */
-.envelope-front {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    height: 60%;
-    background: url('assets/envelope-texture.jpg') center/cover no-repeat;
-    clip-path: polygon(
-        0 0, 
-        0 100%, 
-        50% 60px, 
-        100% 100%, 
-        100% 0
-    ); /* obere Ecken zum Siegel */
-    z-index: 3;
+/* KLAPPE */
+.flap{
+    position:absolute;
+    top:0;
+    width:100%;
+    height:150px;
+    background:url('assets/envelope-texture.jpg') center/cover no-repeat;
+    clip-path:polygon(0 0,50% 100%,100% 0);
+    transform-origin:top;
+    transition:transform 1.5s ease;
+    z-index:4;
 }
 
-/* Klappe */
-.flap {
-    position: absolute;
-    top: 0;
-    width: 100%;
-    height: 55%;
-    background: url('assets/envelope-texture.jpg') center/cover no-repeat;
-    clip-path: polygon(0 0, 50% 100%, 100% 0);
-    transform-origin: top;
-    transition: transform 1.5s ease;
-    z-index: 4;
-}
-
-/* Siegel */
-.seal {
-    position: absolute;
-    width: 85px;
-    height: 85px;
-    background: url('assets/div.seal.png') center/cover no-repeat;
-    top: 85px;
-    left: 168px;
-    z-index: 5;
+/* SIEGEL */
+.seal{
+    position:absolute;
+    width:90px;
+    height:90px;
+    background:url('assets/div.seal.png') center/cover no-repeat;
+    top:95px;
+    left:165px;
+    z-index:5;
 }
 
 /* OPEN STATE */
-.open .flap {
-    transform: rotateX(180deg);
+.open .flap{
+    transform:rotateX(180deg);
 }
 
-.open .letter {
-    transform: translateY(-90px); /* etwa bis Hälfte der Klappenhöhe */
+.open .letter{
+    transform:translateY(-40px); /* fährt bis Hälfte der Klappe */
 }
 
-/* Passwortfeld */
-.password {
-    margin-top: 160px;
-    display: flex;
-    gap: 15px;
+/* PASSWORT */
+.password{
+    margin-top:180px;
+    display:flex;
+    gap:15px;
 }
 
-.password input {
-    padding: 12px 18px;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-    font-size: 16px;
-    text-align: center;
-    width: 200px;
+.password input{
+    padding:12px 18px;
+    border-radius:8px;
+    border:1px solid #ccc;
+    width:200px;
+    text-align:center;
 }
 
-.password button {
-    padding: 12px 20px;
-    border: none;
-    border-radius: 8px;
-    background: #8b0000;
-    color: white;
-    cursor: pointer;
-}
-
-.password button:hover {
-    background: #6e0000;
+.password button{
+    padding:12px 20px;
+    border:none;
+    border-radius:8px;
+    background:#8b0000;
+    color:white;
+    cursor:pointer;
 }
 </style>
 </head>
+
 <body>
 
 <div class="wrapper" id="wrapper">
 
-    <!-- Rückseite des Umschlags -->
     <div class="envelope-back"></div>
 
-    <!-- Letter -->
-    <div class="letter-container">
-        <div class="letter">
-            <p>
-            For you and me.<br>
-            For us.<br>
-            For every "I miss you"<br>
-            and "See you soon".
-            </p>
-        </div>
+    <div class="letter">
+        <p>
+        For you and me.<br>
+        For us.<br>
+        For every "I miss you"<br>
+        and "See you soon".
+        </p>
     </div>
 
-    <!-- Vorderseite mit Schrägen -->
     <div class="envelope-front"></div>
 
-    <!-- Klappe -->
     <div class="flap"></div>
 
-    <!-- Siegel -->
     <div class="seal"></div>
 
 </div>
@@ -183,23 +164,14 @@ body {
 </div>
 
 <script>
-const wrapper = document.getElementById("wrapper");
-
-function openLetter() {
-    const pw = document.getElementById("pw").value;
-    if(pw === "14.04.2025") {
-        wrapper.classList.add("open");
-    } else {
+function openLetter(){
+    const pw=document.getElementById("pw").value;
+    if(pw==="14.04.2025"){
+        document.getElementById("wrapper").classList.add("open");
+    } else{
         alert("Incorrect password 🤍");
     }
 }
-
-// Automatische Animation beim Laden
-window.addEventListener("load",()=>{
-    setTimeout(()=>{
-        wrapper.classList.add("open");
-    },600);
-});
 </script>
 
 </body>
