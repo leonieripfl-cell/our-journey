@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Envelope Animation Sequential</title>
+<title>Envelope Animation Correct Flap</title>
 
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Courier+Prime&display=swap');
@@ -19,12 +19,11 @@ body {
     background: url('assets/fabric-blue.jpg') repeat;
 }
 
-/* Wrapper mit Clipping */
 .wrapper {
     position: relative;
     width: 420px;
     height: 380px;
-    overflow: hidden; /* verhindert dass der Brief unterhalb sichtbar ist */
+    overflow: hidden;
 }
 
 /* Rückseite */
@@ -49,7 +48,7 @@ body {
     clip-path: polygon(0 100%, 50% 0%, 100% 100%);
     z-index: 2;
     transform-origin: top center;
-    transform: rotateX(0deg); /* Start geschlossen */
+    transform: rotateX(180deg); /* startet nach unten geklappt */
     animation: openFlap 1s ease-out forwards;
 }
 
@@ -60,7 +59,7 @@ body {
     width: 100%;
     height: 230px;
     background: url('assets/paper-texture.png') center/cover no-repeat;
-    z-index: 3; /* über Klappe, unter Vorderseite */
+    z-index: 3;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -70,10 +69,10 @@ body {
     text-align: center;
     padding: 20px;
     box-sizing: border-box;
-    transform: translateY(50px); /* tiefer Start */
+    transform: translateY(50px);
     animation: riseLetter 1s ease-out forwards;
-    animation-delay: 1s; /* erst nachdem Klappe öffnet */
-    opacity: 0; /* unsichtbar, bis die Animation startet */
+    animation-delay: 1s;
+    opacity: 0;
 }
 
 /* Vorderseite mit Schrägen */
@@ -128,13 +127,12 @@ body {
     cursor: pointer;
 }
 
-/* Animation Klappe */
+/* Animationen */
 @keyframes openFlap {
-    0% { transform: rotateX(0deg); }
-    100% { transform: rotateX(-90deg); } /* öffnet nach hinten */
+    0% { transform: rotateX(180deg); } /* geschlossen, nach unten geklappt */
+    100% { transform: rotateX(0deg); } /* Endposition, Spitze oben */
 }
 
-/* Animation Brief */
 @keyframes riseLetter {
     0% { transform: translateY(50px); opacity: 0; }
     50% { opacity: 1; }
@@ -155,7 +153,6 @@ body {
     </div>
     <div class="envelope-front"></div>
 
-    <!-- Wachssiegel -->
     <img src="assets/div.seal.png" alt="Wax Seal" class="seal">
 </div>
 
