@@ -1,274 +1,31 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Our Journey Map</title>
-
-<!-- Leaflet CSS -->
-<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
-<!-- Google Fonts: Courier Prime -->
-<link href="https://fonts.googleapis.com/css2?family=Courier+Prime&display=swap" rel="stylesheet">
-
-<style>
-body, html {
-    margin: 0;
-    height: 100%;
-    font-family: 'Courier Prime', monospace;
-}
-
-#map {
-    width: 100%;
-    height: 100vh;
-}
-
-/* Days together field bottom left */
-#daysTogether {
-    position: absolute;
-    bottom: 20px;
-    left: 20px;
-    z-index: 1000;
-    background: rgba(255,255,255,0.85);
-    padding: 10px 15px;
-    border-radius: 8px;
-    font-family: 'Courier Prime', monospace;
-    font-size: 16px;
-    text-align: center;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-}
-
-/* Popup photo album */
-.popup-album img {
-    width: 100px;
-    margin: 5px;
-}
-
-/* Icon bar top right */
-#iconBar {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    z-index: 1000;
-    display: flex;
-    gap: 10px;
-}
-
-/* Icon container */
-.icon-button {
-    width: 50px;
-    height: 50px;
-    border-radius: 8px;
-    background: white;
-    border: 1px solid #ccc;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-}
-
-/* All icons default size */
-.icon-button img {
-    width: 70%;
-    height: 70%;
-    object-fit: contain;
-}
-
-/* Pen slightly smaller */
-#penIcon img {
-    width: 60%;
-    height: 60%;
-}
-
-/* Panels */
-.panel {
-    position: absolute;
-    top: 80px;
-    right: 20px;
-    z-index: 1000;
-    background: white;
-    padding: 15px;
-    border-radius: 8px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-    display: none;
-    width: 250px;
-    max-height: 300px;
-    overflow-y: auto;
-}
-
-.panel h3 {
-    margin-top: 0;
-}
-
-/* Form fields */
-.panel input, .panel textarea {
-    width: 100%;
-    margin-bottom: 8px;
-    padding: 6px;
-    border-radius: 4px;
-    border: 1px solid #ccc;
-}
-.panel button {
-    width: 100%;
-    padding: 8px;
-    background: #8b0000;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-/* Paper plane animation */
-.plane-animation {
-    position: absolute;
-    width: 40px;
-    height: 40px;
-    background: url('assets/paperplane.png') no-repeat center/contain;
-    z-index: 999;
-    pointer-events: none;
-}
-</style>
-</head>
-<body>
-
-<!-- Days together -->
-<div id="daysTogether"><span id="daysCount">0</span> days together</div>
-
-<!-- Icon bar -->
-<div id="iconBar">
-    <div id="planeIcon" class="icon-button" title="Paperplanes">
-        <img src="assets/plane.png" alt="Paperplane">
-    </div>
-    <div id="penIcon" class="icon-button" title="Write a letter">
-        <img src="assets/pen.png" alt="Pen">
-    </div>
-    <div id="pinIcon" class="icon-button" title="Add Pin">
-        <img src="assets/pin.png" alt="Pin">
-    </div>
-</div>
-
-<!-- Panels -->
-<div id="planePanel" class="panel">
-    <h3>Sent Paperplanes</h3>
-    <ul id="planeList"></ul>
-</div>
-
-<div id="letterPanel" class="panel">
-    <h3>Write a Letter</h3>
-    <textarea id="letterText" rows="5" placeholder="Write your letter here..."></textarea>
-    <button id="sendLetter">Send</button>
-</div>
-
-<div id="addPinForm" class="panel">
-    <h3>Add a New Pin</h3>
-    <input type="text" id="pinName" placeholder="Place name">
-    <input type="text" id="pinImage" placeholder="Image URL">
-    <input type="text" id="pinText" placeholder="Text">
-    <button id="savePin">Add Pin</button>
-</div>
-
-<div id="map"></div>
-
-<!-- Leaflet JS -->
-<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-
 <script>
-// Map initialization
-const map = L.map('map').setView([48.2082, 16.3738], 4);
-L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-    attribution: '&copy; OSM &copy; CARTO',
-    subdomains: 'abcd',
-    maxZoom: 19
-}).addTo(map);
-
-// Icons
-const houseIcon = L.icon({iconUrl:'assets/house.png', iconSize:[40,40], iconAnchor:[20,40]});
-
-// Markers
-const edinburgh = L.marker([55.9533, -3.1883], {icon: houseIcon}).addTo(map).bindPopup('<b>Edinburgh</b>');
-const vienna = L.marker([48.2082, 16.3738], {icon: houseIcon}).addTo(map).bindPopup('<b>Vienna</b>');
-
-// Example pins
-const stirling = L.marker([56.1165, -3.9369]).addTo(map)
-.bindPopup('<div class="popup-album"><b>Stirling</b><br><img src="assets/stirling1.jpg"><img src="assets/stirling2.jpg"></div>');
-const budapest = L.marker([47.4979, 19.0402]).addTo(map)
-.bindPopup('<div class="popup-album"><b>Budapest</b><br><img src="assets/budapest1.jpg"><img src="assets/budapest2.jpg"></div>');
-
-// Paperplanes list
-let paperPlanes = JSON.parse(localStorage.getItem('paperPlanes') || '[]');
-const planeList = document.getElementById('planeList');
-function updatePlaneList() {
-    planeList.innerHTML = '';
-    paperPlanes.forEach((msg, i) => {
-        const li = document.createElement('li');
-        li.textContent = msg;
-        planeList.appendChild(li);
-    });
-}
-updatePlaneList();
-
-// Icon buttons
-const planePanel = document.getElementById('planePanel');
-const letterPanel = document.getElementById('letterPanel');
-const addPinForm = document.getElementById('addPinForm');
-
-document.getElementById('planeIcon').addEventListener('click', () => {
-    planePanel.style.display = planePanel.style.display === 'none' ? 'block' : 'none';
-    letterPanel.style.display = 'none';
-    addPinForm.style.display = 'none';
+// Icons für die Marker
+const viennaIcon = L.icon({
+    iconUrl: 'assets/house.vienna.png',
+    iconSize: [40, 40],       // Größe des Hauses
+    iconAnchor: [20, 40]      // Punkt, an dem das Icon auf der Karte "sitzt"
 });
 
-document.getElementById('penIcon').addEventListener('click', () => {
-    letterPanel.style.display = letterPanel.style.display === 'none' ? 'block' : 'none';
-    planePanel.style.display = 'none';
-    addPinForm.style.display = 'none';
+const edinburghIcon = L.icon({
+    iconUrl: 'assets/house.edinburgh.png',
+    iconSize: [40, 40],
+    iconAnchor: [20, 40]
 });
 
-document.getElementById('pinIcon').addEventListener('click', () => {
-    addPinForm.style.display = addPinForm.style.display === 'none' ? 'block' : 'none';
-    planePanel.style.display = 'none';
-    letterPanel.style.display = 'none';
+const pinIcon = L.icon({
+    iconUrl: 'assets/pin.on.map.png',
+    iconSize: [35, 35],       // Pin etwas kleiner
+    iconAnchor: [17, 35]
 });
 
-// Send letter (with animated paperplane)
-document.getElementById('sendLetter').addEventListener('click', () => {
-    const msg = document.getElementById('letterText').value;
-    if(msg) {
-        alert("Letter sent! (animation placeholder)"); // Paperplane animation optional
-        paperPlanes.push(msg);
-        localStorage.setItem('paperPlanes', JSON.stringify(paperPlanes));
-        updatePlaneList();
-        document.getElementById('letterText').value = '';
-        letterPanel.style.display = 'none';
-    }
-});
+// Marker mit Icons setzen
+const edinburgh = L.marker([55.9533, -3.1883], {icon: edinburghIcon}).addTo(map).bindPopup('<b>Edinburgh</b>');
+const vienna = L.marker([48.2082, 16.3738], {icon: viennaIcon}).addTo(map).bindPopup('<b>Vienna</b>');
 
-// Add Pin
-document.getElementById('savePin').addEventListener('click', () => {
-    const name = document.getElementById('pinName').value;
-    const img = document.getElementById('pinImage').value;
-    const text = document.getElementById('pinText').value;
-    if(!name) { alert("Please enter a name!"); return; }
+// Beispiel-Pins
+const stirling = L.marker([56.1165, -3.9369], {icon: pinIcon}).addTo(map)
+    .bindPopup('<div class="popup-album"><b>Stirling</b><br><img src="assets/stirling1.jpg"><img src="assets/stirling2.jpg"></div>');
 
-    L.marker(map.getCenter()).addTo(map)
-        .bindPopup(`<div class="popup-album"><b>${name}</b><br>${text}<br><img src="${img}"></div>`);
-
-    document.getElementById('pinName').value = '';
-    document.getElementById('pinImage').value = '';
-    document.getElementById('pinText').value = '';
-    addPinForm.style.display = 'none';
-});
-
-// Days together bottom left
-function updateDaysTogether() {
-    const startDate = new Date('2025-04-14');
-    const today = new Date();
-    const diffTime = today - startDate;
-    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-    document.getElementById('daysCount').textContent = diffDays;
-}
-updateDaysTogether();
-setInterval(updateDaysTogether, 60*1000);
+const budapest = L.marker([47.4979, 19.0402], {icon: pinIcon}).addTo(map)
+    .bindPopup('<div class="popup-album"><b>Budapest</b><br><img src="assets/budapest1.jpg"><img src="assets/budapest2.jpg"></div>');
 </script>
-</body>
-</html>
