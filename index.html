@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Envelope Step 3 Corrected</title>
+<title>Envelope Step 3 Corrected Seal</title>
 
 <style>
 body {
@@ -36,7 +36,7 @@ body {
     z-index: 1;
 }
 
-/* Vorderseite mit Schrägen korrekt von oben zu Siegel */
+/* Vorderseite mit Schrägen korrekt von oben zu tieferem Siegelpunkt */
 .envelope-front {
     position: absolute;
     top: 150px; /* exakt auf Rückseite */
@@ -45,11 +45,11 @@ body {
     background: url('assets/envelope-texture.jpg') center/cover no-repeat;
 
     clip-path: polygon(
-        0% 0%,     /* obere linke Ecke */
-        50% 40px,  /* Punkt unter Siegel */
-        100% 0%,   /* obere rechte Ecke */
-        100% 100%, /* untere rechte Ecke */
-        0% 100%    /* untere linke Ecke */
+        0% 0%,       /* obere linke Ecke */
+        50% 115px,   /* Siegelpunkt in der Mitte des Rechtecks */
+        100% 0%,     /* obere rechte Ecke */
+        100% 100%,   /* untere rechte Ecke */
+        0% 100%      /* untere linke Ecke */
     );
     z-index: 3;
 }
